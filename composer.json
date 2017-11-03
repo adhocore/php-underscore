@@ -1,0 +1,41 @@
+{
+    "name": "adhocore/underscore",
+    "description": "PHP underscore inspired &amp;/or cloned from _.js",
+    "type": "library",
+    "keywords": ["php", "underscore", "collection"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Jitendra Adhikari",
+            "email": "jiten.adhikary@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Ahc\\Underscore\\": "src/"
+        },
+        "files": []
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ahc\\Underscore\\Test\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=5.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8.0|^5.7.0"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": {
+            "*": "dist"
+        }
+    },
+    "scripts": {
+        "post-root-package-install": [
+        ],
+        "test": "vendor/bin/phpunit"
+    }
+}
