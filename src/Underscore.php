@@ -35,6 +35,170 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
         return $this->data[$index];
     }
 
+    public function each(callable $fn)
+    {
+        foreach ($this->data as $index => $value) {
+            $fn($value, $index);
+        }
+
+        return $this;
+    }
+
+    public function forEach(callable $fn)
+    {
+        return $this->each($fn);
+    }
+
+    public function map(callable $fn)
+    {
+        $data = [];
+
+        foreach ($this->data as $index => $value) {
+            $data[$index] = $fn($value, $index);
+        }
+
+        return new static($data);
+    }
+
+    public function collect(callable $fn)
+    {
+        return $this->map($fn);
+    }
+
+    public function reduce(callable $fn, $memo)
+    {
+        return array_reduce($this->data, $fn, $memo);
+    }
+
+    public function foldl(callable $fn, $memo)
+    {
+        return $this->reduce($fn, $memo);
+    }
+
+    public function inject(callable $fn, $memo)
+    {
+        return $this->reduce($fn, $memo);
+    }
+
+    public function reduceRight(callable $fn, $memo)
+    {
+        // fix!
+        return array_reduce($this->data, $fn, $memo);
+    }
+
+    public function foldr(callable $fn, $memo)
+    {
+        return $this->reduceRight($fn, $memo);
+    }
+
+    public function find(callabe $fn)
+    {
+        foreach ($this->data as $index => $value) {
+            if ($fn($value, $key)) {
+                return $value;
+            }
+        }
+    }
+
+    public function detect(callabe $fn)
+    {
+        return $this->find($fn);
+    }
+
+    public function filter(callable $fn)
+    {
+        $data = [];
+
+        foreach ($this->data as $index => $value) {
+            if ($fn($value, $index)) {
+                $data[$index] = $value;
+            }
+        }
+
+        return new static($data);
+    }
+
+    public function select(callable $fn)
+    {
+        return $this->filter($fn);
+    }
+
+    public function reject(callable $fn)
+    {
+        $data = [];
+
+        foreach ($this->data as $index => $value) {
+            if (!$fn($value, $index)) {
+                $data[$index] = $value;
+            }
+        }
+
+        return new static($data);
+    }
+
+    public function every(callable $fn)
+    {
+        foreach ($this->data as $index => $value) {
+            if (!$fn($value, $index)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function all(callable $fn)
+    {
+        return $this->every($fn);
+    }
+
+    public function some(callable $fn)
+    {
+        foreach ($this->data as $index => $value) {
+            if ($fn($value, $index)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function any(callable $fn)
+    {
+        return $this->some($fn);
+    }
+
+    public function contains($item)
+    {
+        return \in_array($item, $this->data);
+    }
+
+    public function includes($item)
+    {
+        return $this->contains($item);
+    }
+
+    public function include($item)
+    {
+        return $this->contains($item);
+    }
+
+    public function invoke(callable $fn)
+    {
+        return \call_user_func_array($fn, $this->data);
+    }
+
+    public function pluck($columnKey, $indexKey = null)
+    {
+        if (\function_exists('array_column')) {
+            $data = \array_column($this->data, $columnKey, $indexKey);
+        } else {
+            $data = Helper::arrayColumn($this->data, $columnKey, $indexKey);
+        }
+
+        return new static($data);
+    }
+
     /**
      * {@inheritdoc}
      */
