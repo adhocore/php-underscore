@@ -43,14 +43,14 @@ class Helper
         if (!\is_array($array)) {
             \trigger_error('array_column() expects parameter 1 to be array', E_USER_WARNING);
 
-            return null;
+            return;
         }
 
         if (null !== $columnKey) {
             if (\is_object($columnKey) && !\method_exists($columnKey, '__toString')) {
                 \trigger_error('array_column() expects parameter 2 to be number/string/null', E_USER_WARNING);
 
-                return null;
+                return;
             }
 
             $columnKey = \is_float($columnKey) ? (int) $columnKey : (string) $columnKey;
@@ -60,14 +60,14 @@ class Helper
             if (\is_object($indexKey) && !\method_exists($indexKey, '__toString')) {
                 \trigger_error('array_column() expects parameter 3 to be number/string/null', E_USER_WARNING);
 
-                return null;
+                return;
             }
 
             $indexKey = \is_float($indexKey) ? (int) $indexKey : (string) $indexKey;
         }
 
         foreach ($array as $value) {
-            $objectVars = \is_object($value) ? \get_object_vars($value) : array();
+            $objectVars = \is_object($value) ? \get_object_vars($value) : [];
 
             $key = null;
             if (null !== $indexKey) {
