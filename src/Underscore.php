@@ -94,7 +94,7 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
     public function find(callabe $fn)
     {
         foreach ($this->data as $index => $value) {
-            if ($fn($value, $key)) {
+            if ($fn($value, $index)) {
                 return $value;
             }
         }
@@ -190,13 +190,32 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
 
     public function pluck($columnKey, $indexKey = null)
     {
-        if (\function_exists('array_column')) {
-            $data = \array_column($this->data, $columnKey, $indexKey);
-        } else {
-            $data = Helper::arrayColumn($this->data, $columnKey, $indexKey);
-        }
+        $data = \array_column($this->data, $columnKey, $indexKey);
 
         return new static($data);
+    }
+
+    public function where(array $props)
+    {
+        return $this->filter($this->matcher($props));
+    }
+
+    public function findWhere(array $props)
+    {
+        return $this->find($this->matcher($props));
+    }
+
+    protected function matcher(array $props)
+    {
+        return function ($value, $index) use ($props) {
+            foreach ($props as $prop => $criteria) {
+                if ($value !== $criteria || $prop != $index) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
     }
 
     /**
@@ -261,6 +280,11 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
     public function __toString()
     {
         return \json_encode($this->data);
+    }
+
+    public static function _($data)
+    {
+        return new static($data);
     }
 }
 
