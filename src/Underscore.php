@@ -16,7 +16,7 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
      */
     public function __construct($data = [])
     {
-        $this->data = is_array($data) ? $data : Helper::asArray($data);
+        $this->data = \is_array($data) ? $data : Helper::asArray($data);
     }
 
     /**
@@ -62,7 +62,7 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
 
     public function reduce(callable $fn, $memo)
     {
-        return array_reduce($this->data, $fn, $memo);
+        return \array_reduce($this->data, $fn, $memo);
     }
 
     public function foldl(callable $fn, $memo)
@@ -77,7 +77,7 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
 
     public function reduceRight(callable $fn, $memo)
     {
-        return array_reduce(array_reverse($this->data), $fn, $memo);
+        return \array_reduce(\array_reverse($this->data), $fn, $memo);
     }
 
     public function foldr(callable $fn, $memo)
@@ -101,7 +101,7 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
 
     public function filter(callable $fn)
     {
-        $data = array_filter($this->data, $fn, \ARRAY_FILTER_USE_BOTH);
+        $data = \array_filter($this->data, $fn, \ARRAY_FILTER_USE_BOTH);
 
         return new static($data);
     }
@@ -113,7 +113,7 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
 
     public function reject(callable $fn)
     {
-        $data = array_filter($this->data, $this->negate($fn), \ARRAY_FILTER_USE_BOTH);
+        $data = \array_filter($this->data, $this->negate($fn), \ARRAY_FILTER_USE_BOTH);
 
         return new static($data);
     }
@@ -121,7 +121,7 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
     protected function negate(callable $fn)
     {
         return function () use ($fn) {
-            return !call_user_func_array($fn, func_get_args());
+            return !\call_user_func_array($fn, \func_get_args());
         };
     }
 
@@ -148,12 +148,8 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
     protected function match(callable $fn, $all = true)
     {
         foreach ($this->data as $index => $value) {
-            if ($all && !$fn($value, $index)) {
-                return false;
-            }
-
-            if (!$all && $fn($value, $index)) {
-                return true;
+            if ($all ^ $fn($value, $index)) {
+                return !$all;
             }
         }
 
