@@ -44,11 +44,6 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
         return $this;
     }
 
-    public function forEach(callable $fn)
-    {
-        return $this->each($fn);
-    }
-
     public function map(callable $fn)
     {
         $data = [];
