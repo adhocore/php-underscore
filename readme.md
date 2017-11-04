@@ -11,7 +11,7 @@ Heavily work in progress and not yet ready!
 
 ## Installation
 
-Requires PHP5.5 or later.
+Requires PHP5.6 or later.
 
 ```bash
 composer require adhocore/underscore
