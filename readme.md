@@ -7,6 +7,7 @@
 [![StyleCI](https://styleci.io/repos/108437038/shield)](https://styleci.io/repos/108437038)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
+Heavily work in progress and not yet ready!
 
 ## Installation
 
