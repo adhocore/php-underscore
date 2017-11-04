@@ -173,11 +173,6 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
         return $this->contains($item);
     }
 
-    public function include($item)
-    {
-        return $this->contains($item);
-    }
-
     public function invoke(callable $fn)
     {
         return \call_user_func_array($fn, $this->data);
