@@ -127,13 +127,7 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
 
     public function every(callable $fn)
     {
-        foreach ($this->data as $index => $value) {
-            if (!$fn($value, $index)) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->match($fn, true);
     }
 
     public function all(callable $fn)
@@ -143,18 +137,27 @@ class Underscore implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonS
 
     public function some(callable $fn)
     {
-        foreach ($this->data as $index => $value) {
-            if ($fn($value, $index)) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->match($fn, false);
     }
 
     public function any(callable $fn)
     {
         return $this->some($fn);
+    }
+
+    protected function match(callable $fn, $all = true)
+    {
+        foreach ($this->data as $index => $value) {
+            if ($all && !$fn($value, $index)) {
+                return false;
+            }
+
+            if (!$all && $fn($value, $index)) {
+                return true;
+            }
+        }
+
+        return $all;
     }
 
     public function contains($item)
