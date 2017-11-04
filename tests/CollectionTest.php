@@ -68,13 +68,13 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_map_collect()
     {
-        $mapped  = _::_([1, 2, 3])->map(function ($num) {
+        $mapped = _::_([1, 2, 3])->map(function ($num) {
             return $num * 2;
         });
 
         $this->assertSame([2, 4, 6], $mapped->get(), 'callback applied on each member');
 
-        $mapped  = _::_([['a' => 1], ['a' => 2]])->collect(function ($row) {
+        $mapped = _::_([['a' => 1], ['a' => 2]])->collect(function ($row) {
             return $row['a'];
         });
 
@@ -218,8 +218,8 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $names  = $people->pluck('name')->get();
         $ages   = $people->pluck('age')->get();
 
-        $this->assertSame(['moe', 'curly'],  $names, 'pluck names');
-        $this->assertSame([30],  $ages, 'pluck ages');
+        $this->assertSame(['moe', 'curly'], $names, 'pluck names');
+        $this->assertSame([30], $ages, 'pluck ages');
     }
 
     public function test_where()
