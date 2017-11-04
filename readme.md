@@ -10,7 +10,7 @@
 
 ## Installation
 
-Requires PHP5.4 or later.
+Requires PHP5.5 or later.
 
 ```bash
 composer require adhocore/underscore
