@@ -25,9 +25,11 @@ class Helper
             return $data->get();
         }
 
+        // @codeCoverageIgnoreStart
         if ($data instanceof \Traversable) {
             return \iterator_to_array($data);
         }
+        // @codeCoverageIgnoreEnd
 
         if ($data instanceof \JsonSerializable) {
             return $data->jsonSerialize();
