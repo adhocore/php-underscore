@@ -14,7 +14,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
         $answers = [];
         $count   = 0;
-        _::_([1, 2, 3])->each(function($num) use (&$answers, &$count) {
+        _::_([1, 2, 3])->each(function ($num) use (&$answers, &$count) {
             $answers[] = $num * 5;
             $count++;
         });
@@ -23,7 +23,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($count, 3, 'callback applied exactly 3 times');
 
         $answers = [];
-        _::_(['one' => 1, 'two' => 2, 'three' => 3])->each(function($num, $index) use (&$answers) {
+        _::_(['one' => 1, 'two' => 2, 'three' => 3])->each(function ($num, $index) use (&$answers) {
             $answers[] = $index;
         });
 
