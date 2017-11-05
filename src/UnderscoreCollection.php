@@ -236,13 +236,9 @@ class UnderscoreCollection extends UnderscoreArray
 
     public function countBy($fn)
     {
-        $data = [];
-
-        foreach ($this->group($fn, true) as $index => $value) {
-            $data[$index] = \count($value);
-        }
-
-        return new static($data);
+        return $this->group($fn, true)->map(function ($value) {
+            return \count($value);
+        });
     }
 
     protected function group($fn, $isGroup = true)
