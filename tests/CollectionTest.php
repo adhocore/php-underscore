@@ -2,7 +2,7 @@
 
 namespace Ahc\Underscore\Tests;
 
-use Ahc\Underscore\Underscore as _;
+use Ahc\Underscore\UnderscoreCollection as _;
 
 class CollectionTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +14,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(8, $_[2]);
         $this->assertTrue(isset($_['c']));
         $this->assertFalse(isset($_['D']));
-        $this->assertCount(5, $_);
+        $this->assertSame(5, $_->size());
 
         unset($_['c']);
 
@@ -242,5 +242,141 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(['a' => 1, 'b' => 3], $b3, 'findwhere b = 3');
         $this->assertNull($a2b1, 'where a = 2 and b = 1');
+    }
+
+    public function test_max_min()
+    {
+        $list = _::_([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 3], ['a' => 0, 'b' => 1]]);
+
+        $this->assertSame(2, $list->max('a'), 'max a = 2');
+        $this->assertSame(3, $list->max('b'), 'max a = 3');
+        $this->assertSame(0, $list->min('a'), 'min a = 0');
+        $this->assertSame(1, $list->min('b'), 'min b = 1');
+
+        $this->assertSame(5, $list->max(function ($i) {
+            return $i['a'] + $i['b'];
+        }), 'max sum of a and b');
+
+        $this->assertSame(1, $list->min(function ($i) {
+            return $i['b'] - $i['a'];
+        }), 'max diff of b and a');
+
+        $list = _::_([1, 99, 9, -10, 1000, false, 0, 'string', -99, 10000, 87, null]);
+
+        $this->assertSame(10000, $list->max(), 'max = 10000');
+        $this->assertSame(-99, $list->min(), 'min = -99');
+    }
+
+    public function test_shuffle()
+    {
+        $pool = range(1, 5);
+        $shuf = _::_($pool)->shuffle()->get();
+
+        foreach ($shuf as $key => $value) {
+            $this->assertArrayHasKey($key, $pool, 'shuffled item is one from pool');
+            $this->assertSame($pool[$key], $value, 'The values are the same as in pool');
+        }
+
+        $this->assertSame(count($pool), count($shuf), 'Should have exact counts');
+    }
+
+    public function test_sample()
+    {
+        $pool = range(10, 5, -1);
+
+        foreach ([1, 2, 3] as $n) {
+            $samp = _::_($pool)->sample($n)->get();
+
+            foreach ($samp as $key => $value) {
+                $this->assertArrayHasKey($key, $pool, 'sampled item is one from pool');
+                $this->assertSame($pool[$key], $value, 'The values are the same as in pool');
+            }
+
+            $this->assertCount($n, $samp, 'The count should be the one specified');
+        }
+    }
+
+    public function test_sortBy()
+    {
+        $sort = $init = range(1, 15);
+        $sort = _::_($sort)->shuffle()->get();
+
+        $this->assertNotSame($init, $sort, 'Should be random');
+
+        $sort = _::_($sort)->sortBy(null)->get();
+
+        $this->assertSame($init, $sort, 'Should be sorted');
+
+        $list = _::_([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 3], ['a' => 0, 'b' => 1]]);
+
+        $byA = $list->sortBy('a')->get();
+        $this->assertSame(
+            [2 => ['a' => 0, 'b' => 1], 0 => ['a' => 1, 'b' => 2], 1 => ['a' => 2, 'b' => 3]],
+            $byA, 'sort by a'
+        );
+
+        $byAB = $list->sortBy(function ($i) {
+            return $i['a'] + $i['b'];
+        })->get();
+
+        $this->assertSame(
+            [2 => ['a' => 0, 'b' => 1], 0 => ['a' => 1, 'b' => 2], 1 => ['a' => 2, 'b' => 3]],
+            $byAB, 'sort by a+b'
+        );
+    }
+
+    public function test_groupBy_indexBy_countBy()
+    {
+        $list = _::_([
+            ['a' => 0, 'b' => 1, 'c' => 1],
+            ['a' => true, 'b' => false, 'c' => 'c'],
+            ['a' => 2, 'b' => 1, 'c' => 2],
+            ['a' => 1, 'b' => null, 'c' => 0],
+        ]);
+
+        $grpByA = $list->groupBy('a')->get();
+        $idxByA = $list->indexBy('a')->get();
+        $cntByA = $list->countBy('a')->get();
+
+        $this->assertSame([
+            0 => [0 => ['a' => 0, 'b' => 1, 'c' => 1]],
+            1 => [1 => ['a' => true, 'b' => false, 'c' => 'c'], 3 => ['a' => 1, 'b' => null, 'c' => 0]],
+            2 => [2 => ['a' => 2, 'b' => 1, 'c' => 2]],
+        ], $grpByA, 'groupBy a');
+
+        $this->assertSame([
+            0 => ['a' => 0, 'b' => 1, 'c' => 1],
+            1 => ['a' => 1, 'b' => null, 'c' => 0],
+            2 => ['a' => 2, 'b' => 1, 'c' => 2],
+        ], $idxByA, 'indexBy a');
+
+        $this->assertSame([
+            0 => 1,
+            1 => 2,
+            2 => 1,
+        ], $cntByA, 'countBy a');
+    }
+
+    public function test_toArray()
+    {
+        $array = [['deep'=> 1, 'ok'], 'shallow', 0, false];
+
+        $this->assertSame($array, _::_($array)->toArray());
+    }
+
+    public function test_partition()
+    {
+        $nums   = _::_(range(1, 10));
+        $oddEvn = $nums->partition(function ($i) { return $i % 2; })->get();
+        $evnOdd = $nums->partition(function ($i) { return $i % 2 == 0; })->get();
+
+        $this->assertCount(2, $oddEvn, '2 partitions');
+        $this->assertArrayHasKey(0, $oddEvn, 'odd partition');
+        $this->assertArrayHasKey(1, $oddEvn, 'even partition');
+
+        $this->assertSame([1, 3, 5, 7, 9], $oddEvn[0], 'odds');
+        $this->assertSame([1, 3, 5, 7, 9], $oddEvn[0], 'odds');
+        $this->assertSame($evnOdd[1], $oddEvn[0], 'odds crosscheck');
+        $this->assertSame($evnOdd[0], $oddEvn[1], 'evens crosscheck');
     }
 }
