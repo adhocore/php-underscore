@@ -359,7 +359,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_toArray()
     {
-        $array = [['deep'=> 1, 'ok'], 'shallow', 0, false];
+        $array = [['deep' => 1, 'ok'], 'shallow', 0, false];
 
         $this->assertSame($array, _::_($array)->toArray());
     }
@@ -367,8 +367,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function test_partition()
     {
         $nums   = _::_(range(1, 10));
-        $oddEvn = $nums->partition(function ($i) { return $i % 2; })->get();
-        $evnOdd = $nums->partition(function ($i) { return $i % 2 == 0; })->get();
+        $oddEvn = $nums->partition(function ($i) {
+            return $i % 2;
+        })->get();
+        $evnOdd = $nums->partition(function ($i) {
+            return $i % 2 == 0;
+        })->get();
 
         $this->assertCount(2, $oddEvn, '2 partitions');
         $this->assertArrayHasKey(0, $oddEvn, 'odd partition');
