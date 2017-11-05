@@ -17,10 +17,6 @@ class Helper
             return $data;
         }
 
-        if (\method_exists($data, 'toArray')) {
-            return $data->toArray();
-        }
-
         if ($data instanceof Underscore) {
             return $data->get();
         }
@@ -33,6 +29,10 @@ class Helper
 
         if ($data instanceof \JsonSerializable) {
             return $data->jsonSerialize();
+        }
+
+        if (\method_exists($data, 'toArray')) {
+            return $data->toArray();
         }
 
         return (array) $data;
