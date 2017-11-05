@@ -83,26 +83,26 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_reduce_foldl_inject()
     {
-        $sum = _::_([1, 2, 3])->reduce(function ($num, $sum) {
+        $sum = _::_([1, 2, 3])->reduce(function ($sum, $num) {
             return $num + $sum;
         }, 0);
 
         $this->assertSame(6, $sum, 'sum by reduce');
 
-        $sum = _::_([1, 2, 3])->foldl(function ($num, $sum) {
+        $sum = _::_([1, 2, 3])->foldl(function ($sum, $num) {
             return $num + $sum;
         }, 10);
 
         $this->assertSame(10 + 6, $sum, 'sum by reduce with initial 10');
 
-        $prod = _::_([1, 2, 3, 4])->inject(function ($num, $sum) {
-            return $num * $sum;
+        $prod = _::_([1, 2, 3, 4])->inject(function ($prod, $num) {
+            return $prod * $num;
         }, 1);
 
         $this->assertSame(24, $prod, 'prod by reduce with initial 1');
 
-        $concat = _::_([1, 2, 3, 4])->inject(function ($num, $concat) {
-            return $num . $concat;
+        $concat = _::_([1, 2, 3, 4])->inject(function ($concat, $num) {
+            return $concat . $num;
         }, '');
 
         $this->assertSame('1234', $concat, 'concat by reduce');
@@ -116,8 +116,8 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(6, $sum, 'sum by reduceRight');
 
-        $concat = _::_([1, 2, 3, 4])->foldr(function ($num, $concat) {
-            return $num . $concat;
+        $concat = _::_([1, 2, 3, 4])->foldr(function ($concat, $num) {
+            return $concat . $num;
         }, '');
 
         $this->assertSame('4321', $concat, 'concat by reduceRight');
