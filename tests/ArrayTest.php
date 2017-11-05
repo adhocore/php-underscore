@@ -28,10 +28,10 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
     public function test_flatten()
     {
-        $array = [0, 'a', '', [[1, [2]]], 'b', [[[3]], 4, 'c']];
+        $array = [0, 'a', '', [[1, [2]]], 'b', [[[3]], 4, 'c', new _([5, 'd'])]];
 
         $this->assertSame(
-            [0, 'a', '', 1, 2, 'b', 3, 4, 'c'],
+            [0, 'a', '', 1, 2, 'b', 3, 4, 'c', 5, 'd'],
             _::_($array)->flatten()->get(),
             'flatten'
         );
