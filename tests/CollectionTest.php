@@ -110,7 +110,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_reduceRight_foldr()
     {
-        $sum = _::_([1, 2, 3])->reduce(function ($num, $sum) {
+        $sum = _::_([1, 2, 3])->reduce(function ($sum, $num) {
             return $num + $sum;
         }, 0);
 
