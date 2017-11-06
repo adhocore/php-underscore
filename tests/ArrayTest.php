@@ -15,8 +15,15 @@ class ArrayTest extends \PHPUnit_Framework_TestCase
 
         $array = ['x' => ['first'], 'z' => 'last'];
 
-        $this->assertSame($array['x'], _::_($array)->first(), 'first');
-        $this->assertSame($array['z'], _::_($array)->last(), 'last');
+        $this->assertSame($array['x'], _::_($array)->head(), 'first');
+        $this->assertSame($array['z'], _::_($array)->tail(), 'last');
+
+        $array = range(1, 5);
+
+        $this->assertSame([1, 2, 3], _::_($array)->take(3), 'first 3');
+        $this->assertSame([1, 2, 3, 4, 5], _::_($array)->first(6), 'first 6 (n + 1)');
+        $this->assertSame([2 => 3, 3 => 4, 4 => 5], _::_($array)->drop(3), 'last 3');
+        $this->assertSame([1, 2, 3, 4, 5], _::_($array)->last(6), 'last 6 (n + 1)');
     }
 
     public function test_compact()
