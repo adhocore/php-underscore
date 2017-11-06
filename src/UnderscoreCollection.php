@@ -2,7 +2,7 @@
 
 namespace Ahc\Underscore;
 
-class UnderscoreCollection extends UnderscoreArray
+class UnderscoreCollection extends UnderscoreBase
 {
     public function each(callable $fn)
     {
@@ -46,7 +46,7 @@ class UnderscoreCollection extends UnderscoreArray
 
     public function reduceRight(callable $fn, $memo)
     {
-        return \array_reduce(\array_reverse($this->data), $fn, $memo);
+        return \array_reduce(\array_reverse($this->data, true), $fn, $memo);
     }
 
     public function foldr(callable $fn, $memo)
@@ -54,11 +54,11 @@ class UnderscoreCollection extends UnderscoreArray
         return $this->reduceRight($fn, $memo);
     }
 
-    public function find(callable $fn)
+    public function find(callable $fn, $useValue = true)
     {
         foreach ($this->data as $index => $value) {
             if ($fn($value, $index)) {
-                return $value;
+                return $useValue ? $value : $index;
             }
         }
     }
@@ -68,8 +68,12 @@ class UnderscoreCollection extends UnderscoreArray
         return $this->find($fn);
     }
 
-    public function filter(callable $fn)
+    public function filter($fn = null)
     {
+        if (null === $fn) {
+            return new static(\array_filter($this->data));
+        }
+
         $data = \array_filter($this->data, $fn, \ARRAY_FILTER_USE_BOTH);
 
         return new static($data);
@@ -247,21 +251,10 @@ class UnderscoreCollection extends UnderscoreArray
         $fn   = $this->valueFn($fn);
 
         foreach ($this->data as $index => $value) {
-            $isGroup ? $data[$fn($value)][$index] = $value : $data[$fn($value)] = $value;
+            $isGroup ? $data[$fn($value, $index)][$index] = $value : $data[$fn($value, $index)] = $value;
         }
 
         return new static($data);
-    }
-
-    public function toArray()
-    {
-        return $this->map(function ($value) {
-            if (\is_scalar($value)) {
-                return $value;
-            }
-
-            return $this->asArray($value);
-        })->get();
     }
 
     public function size()
@@ -274,8 +267,8 @@ class UnderscoreCollection extends UnderscoreArray
         $data = [[/* pass */], [/* fail */]];
         $fn   = $this->valueFn($fn);
 
-        $this->each(function ($value, $key) use ($fn, &$data) {
-            $data[$fn($value, $key) ? 0 : 1][] = $value;
+        $this->each(function ($value, $index) use ($fn, &$data) {
+            $data[$fn($value, $index) ? 0 : 1][] = $value;
         });
 
         return new static($data);
