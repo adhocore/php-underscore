@@ -75,4 +75,76 @@ class UnderscoreArray extends UnderscoreCollection
     {
         return $this->unique($fn);
     }
+
+    public function difference($data)
+    {
+        return new static(\array_diff($this->data, $this->asArray($data)));
+    }
+
+    public function without($data)
+    {
+        return $this->difference($data);
+    }
+
+    public function union($data)
+    {
+        return new static(\array_unique(
+            \array_merge($this->data, $this->asArray($data))
+        ));
+    }
+
+    public function intersection($data)
+    {
+        $data = $this->asArray($data);
+
+        return $this->filter(function ($value, $index) use ($data) {
+            return \in_array($value, $data);
+        });
+    }
+
+    public function zip($data)
+    {
+        $data = $this->asArray($data);
+
+        return $this->map(function ($value, $index) use ($data) {
+            return [$value, isset($data[$index]) ? $data[$index] : null];
+        });
+    }
+
+    public function unzip()
+    {
+        //
+    }
+
+    public function object($className = null)
+    {
+        return $this->map(function ($value, $index) {
+            return $className ? new $className($value, $index) : (object) \compact('value', 'index');
+        });
+    }
+
+    public function firstIndex($fn)
+    {
+        return $this->find($fn, false);
+    }
+
+    public function lastIndex($fn)
+    {
+        return (new static(\array_reverse($this->data, true)))->find($fn, false);
+    }
+
+    public function indexOf($value)
+    {
+        return \array_search($value, $this->data);
+    }
+
+    public function lastIndexOf($value)
+    {
+        return \array_search($value, \array_reverse($this->data, true));
+    }
+
+    public function range($start, $stop, $step = 1)
+    {
+        return new static(\range($start, $stop, $step));
+    }
 }
