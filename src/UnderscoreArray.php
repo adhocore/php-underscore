@@ -2,16 +2,49 @@
 
 namespace Ahc\Underscore;
 
-class UnderscoreArray extends UnderscoreBase
+class UnderscoreArray extends UnderscoreCollection
 {
-    public function first()
+    public function first($n = 1)
     {
-        return \reset($this->data);
+        return $this->slice($n, true);
     }
 
-    public function last()
+    public function head($n = 1)
     {
-        return \end($this->data);
+        return $this->first($n);
+    }
+
+    public function take($n = 1)
+    {
+        return $this->first($n);
+    }
+
+    public function last($n = 1)
+    {
+        return $this->slice($n, false);
+    }
+
+    public function tail($n = 1)
+    {
+        return $this->last($n);
+    }
+
+    public function drop($n = 1)
+    {
+        return $this->last($n);
+    }
+
+    protected function slice($n, $isFirst = true)
+    {
+        if ($n < 2) {
+            return $isFirst ? \reset($this->data) : \end($this->data);
+        }
+
+        if ($n >= $c = $this->count()) {
+            return $this->data;
+        }
+
+        return \array_slice($this->data, $isFirst ? 0 : $c - $n, $isFirst ? $n : null, true);
     }
 
     public function compact()
@@ -33,18 +66,12 @@ class UnderscoreArray extends UnderscoreBase
         $ids = $data = [];
         $fn  = $this->valueFn($fn);
 
-        foreach ($this->data as $index => $value) {
-            if (!isset($ids[$id = $fn($value, $index)])) {
-                $ids[$id] = true;
-
-                $data[$index] = $value;
-            }
-        }
-
-        return new static($data);
+        return $this->filter(function ($value, $index) use ($fn, &$ids) {
+            return !isset($ids[$id = $fn($value, $index)]) ? $ids[$id] = true : false;
+        });
     }
 
-    public function uniq($fn)
+    public function uniq($fn = null)
     {
         return $this->unique($fn);
     }
