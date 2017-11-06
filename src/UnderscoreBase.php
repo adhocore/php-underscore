@@ -70,6 +70,22 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
+     * Convert the data items to array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return array_map(function ($value) {
+            if (\is_scalar($value)) {
+                return $value;
+            }
+
+            return $this->asArray($value);
+        }, $this->data);
+    }
+
+    /**
      * Flatten a multi dimension array to 1 dimension.
      *
      * @param array $array
@@ -192,10 +208,27 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      */
     public function __toString()
     {
-        return \json_encode($this->data);
+        return \json_encode($this->toArray());
     }
 
-    public static function _($data)
+    /**
+     * The current time in millisec.
+     *
+     * @return float
+     */
+    public function now()
+    {
+        return microtime(1) * 1000;
+    }
+
+    /**
+     * A static shortcut to constructor.
+     *
+     * @param mixed $data
+     *
+     * @return self
+     */
+    public static function _($data = null)
     {
         return new static($data);
     }
