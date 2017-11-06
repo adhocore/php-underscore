@@ -44,4 +44,9 @@ class BaseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInstanceOf(_::class, underscore());
     }
+
+    public function test_now()
+    {
+        $this->assertTrue(is_float(_::_()->now()));
+    }
 }
