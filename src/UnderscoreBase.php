@@ -12,7 +12,7 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     /**
      * Constructor.
      *
-     * @param array|mixed $data.
+     * @param array|mixed $data Array or array like or array convertible.
      */
     public function __construct($data = [])
     {
@@ -38,11 +38,12 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     /**
      * Get data as array.
      *
-     * @param mixed $data
+     * @param mixed $data Arbitrary data.
+     * @param bool  $cast Force casting to array!
      *
      * @return array
      */
-    public function asArray($data)
+    public function asArray($data, $cast = true)
     {
         if (\is_array($data)) {
             return $data;
@@ -66,7 +67,7 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
             return $data->toArray();
         }
 
-        return (array) $data;
+        return  $cast ? (array) $data : $data;
     }
 
     /**
@@ -76,12 +77,12 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      */
     public function toArray()
     {
-        return array_map(function ($value) {
+        return \array_map(function ($value) {
             if (\is_scalar($value)) {
                 return $value;
             }
 
-            return $this->asArray($value);
+            return $this->asArray($value, false);
         }, $this->data);
     }
 
@@ -143,12 +144,16 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
 
             $value = \array_column([$value], $fn);
 
-            return $value ? $value[0] : null;
+            return  $value ? $value[0] : null;
         };
     }
 
     /**
-     * {@inheritdoc}
+     * Checks if offset/index exists.
+     *
+     * @param string|int $index
+     *
+     * @return bool
      */
     public function offsetExists($index)
     {
@@ -156,7 +161,9 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the value at given offset/index.
+     *
+     * @return mixed
      */
     public function offsetGet($index)
     {
@@ -164,7 +171,12 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Sets a new value at the given offset/index.
+     *
+     * @param string|int $index
+     * @param mixed      $value
+     *
+     * @return void
      */
     public function offsetSet($index, $value)
     {
@@ -172,7 +184,9 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Unsets/removes the value at given index.
+     *
+     * @param string|int $index
      */
     public function offsetUnset($index)
     {
@@ -180,7 +194,9 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the count of items.
+     *
+     * @return int
      */
     public function count()
     {
@@ -188,7 +204,17 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Alias of count().
+     */
+    public function size()
+    {
+        return $this->count();
+    }
+
+    /**
+     * Gets the iterator for looping.
+     *
+     * @return \ArrayIterator
      */
     public function getIterator()
     {
@@ -196,15 +222,19 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the data for json serialization.
+     *
+     * @return array
      */
     public function jsonSerialize()
     {
-        return $this->data;
+        return $this->toArray();
     }
 
     /**
-     * {@inheritdoc}
+     * Stringify the underscore instance.
+     *
+     * @return string Json encoded data.
      */
     public function __toString()
     {
@@ -218,7 +248,7 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      */
     public function now()
     {
-        return microtime(1) * 1000;
+        return \microtime(1) * 1000;
     }
 
     /**
