@@ -4,7 +4,7 @@ namespace Ahc\Underscore\Tests;
 
 use Ahc\Underscore\UnderscoreCollection as _;
 
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 {
     public function test_array_json_props()
     {

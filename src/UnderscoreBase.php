@@ -12,7 +12,7 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     /**
      * Constructor.
      *
-     * @param array|mixed $data.
+     * @param array|mixed $data Array or array like or array convertible.
      */
     public function __construct($data = [])
     {
@@ -38,11 +38,12 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     /**
      * Get data as array.
      *
-     * @param mixed $data
+     * @param mixed $data Arbitrary data.
+     * @param bool  $cast Force casting to array!
      *
      * @return array
      */
-    public function asArray($data)
+    public function asArray($data, $cast = true)
     {
         if (\is_array($data)) {
             return $data;
@@ -66,7 +67,23 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
             return $data->toArray();
         }
 
-        return (array) $data;
+        return  $cast ? (array) $data : $data;
+    }
+
+    /**
+     * Convert the data items to array.
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return \array_map(function ($value) {
+            if (\is_scalar($value)) {
+                return $value;
+            }
+
+            return $this->asArray($value, false);
+        }, $this->data);
     }
 
     /**
@@ -127,12 +144,16 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
 
             $value = \array_column([$value], $fn);
 
-            return $value ? $value[0] : null;
+            return  $value ? $value[0] : null;
         };
     }
 
     /**
-     * {@inheritdoc}
+     * Checks if offset/index exists.
+     *
+     * @param string|int $index
+     *
+     * @return bool
      */
     public function offsetExists($index)
     {
@@ -140,7 +161,9 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the value at given offset/index.
+     *
+     * @return mixed
      */
     public function offsetGet($index)
     {
@@ -148,7 +171,12 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Sets a new value at the given offset/index.
+     *
+     * @param string|int $index
+     * @param mixed      $value
+     *
+     * @return void
      */
     public function offsetSet($index, $value)
     {
@@ -156,7 +184,9 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Unsets/removes the value at given index.
+     *
+     * @param string|int $index
      */
     public function offsetUnset($index)
     {
@@ -164,7 +194,9 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the count of items.
+     *
+     * @return int
      */
     public function count()
     {
@@ -172,7 +204,17 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Alias of count().
+     */
+    public function size()
+    {
+        return $this->count();
+    }
+
+    /**
+     * Gets the iterator for looping.
+     *
+     * @return \ArrayIterator
      */
     public function getIterator()
     {
@@ -180,22 +222,120 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * {@inheritdoc}
+     * Gets the data for json serialization.
+     *
+     * @return array
      */
     public function jsonSerialize()
     {
-        return $this->data;
+        return $this->toArray();
     }
 
     /**
-     * {@inheritdoc}
+     * Stringify the underscore instance.
+     *
+     * @return string Json encoded data.
      */
     public function __toString()
     {
-        return \json_encode($this->data);
+        return \json_encode($this->toArray());
     }
 
-    public static function _($data)
+    /**
+     * The current time in millisec.
+     *
+     * @return float
+     */
+    public function now()
+    {
+        return \microtime(1) * 1000;
+    }
+
+    /**
+     * Get all the keys.
+     *
+     * @return self
+     */
+    public function keys()
+    {
+        return new static(\array_keys($this->data));
+    }
+
+    /**
+     * Get all the keys.
+     *
+     * @return self
+     */
+    public function values()
+    {
+        return new static(\array_values($this->data));
+    }
+
+    /**
+     * Pair all items to use an array of index and value.
+     *
+     * @return self
+     */
+    public function pairs()
+    {
+        $pairs = [];
+
+        foreach ($this->data as $index => $value) {
+            $pairs[$index] = [$index, $value];
+        }
+
+        return new static($pairs);
+    }
+
+    /**
+     * Swap index and value of all the items. The values should be stringifiable.
+     *
+     * @return self
+     */
+    public function invert()
+    {
+        return new static(\array_flip($this->data));
+    }
+
+    /**
+     * Pick only the items having one of the whitelisted indexes.
+     *
+     * @param array|...string|...int $index Either whitelisted indexes as array or as variads.
+     *
+     * @return self
+     */
+    public function pick($index)
+    {
+        $indices = \array_flip(\is_array($index) ? $index : \func_get_args());
+
+        return new static(\array_intersect_key($this->data, $indices));
+    }
+
+    /**
+     * Omit the items having one of the blacklisted indexes.
+     *
+     * @param array|...string|...int $index Either blacklisted indexes as array or as variads.
+     *
+     * @return self
+     */
+    public function omit($index)
+    {
+        $indices = \array_diff(
+            \array_keys($this->data),
+            \is_array($index) ? $index : \func_get_args()
+        );
+
+        return $this->pick($indices);
+    }
+
+    /**
+     * A static shortcut to constructor.
+     *
+     * @param mixed $data
+     *
+     * @return self
+     */
+    public static function _($data = null)
     {
         return new static($data);
     }
