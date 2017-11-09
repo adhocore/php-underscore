@@ -294,13 +294,13 @@ class UnderscoreCollection extends UnderscoreBase
     }
 
     /**
-     * Props matcher used by where() and findWhere().
+     * Gives props matcher callback used by where() and findWhere().
      *
      * @internal
      *
      * @param array $props Key value pairs.
      *
-     * @return true
+     * @return callable
      */
     protected function matcher(array $props)
     {

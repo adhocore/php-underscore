@@ -116,7 +116,7 @@ class UnderscoreArray extends UnderscoreCollection
             return new static(\array_unique($this->data));
         }
 
-        $ids = $data = [];
+        $ids = [];
         $fn  = $this->valueFn($fn);
 
         return $this->filter(function ($value, $index) use ($fn, &$ids) {
@@ -179,7 +179,7 @@ class UnderscoreArray extends UnderscoreCollection
     {
         $data = $this->asArray($data);
 
-        return $this->filter(function ($value, $index) use ($data) {
+        return $this->filter(function ($value) use ($data) {
             return \in_array($value, $data);
         });
     }
