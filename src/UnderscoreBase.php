@@ -252,6 +252,83 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
+     * Get all the keys.
+     *
+     * @return self
+     */
+    public function keys()
+    {
+        return new static(\array_keys($this->data));
+    }
+
+    /**
+     * Get all the keys.
+     *
+     * @return self
+     */
+    public function values()
+    {
+        return new static(\array_values($this->data));
+    }
+
+    /**
+     * Pair all items to use an array of index and value.
+     *
+     * @return self
+     */
+    public function pairs()
+    {
+        $pairs = [];
+
+        foreach ($this->data as $index => $value) {
+            $pairs[$index] = [$index, $value];
+        }
+
+        return new static($pairs);
+    }
+
+    /**
+     * Swap index and value of all the items. The values should be stringifiable.
+     *
+     * @return self
+     */
+    public function invert()
+    {
+        return new static(\array_flip($this->data));
+    }
+
+    /**
+     * Pick only the items having one of the whitelisted indexes.
+     *
+     * @param array|...string|...int $index Either whitelisted indexes as array or as variads.
+     *
+     * @return self
+     */
+    public function pick($index)
+    {
+        $indices = \array_flip(\is_array($index) ? $index : \func_get_args());
+
+        return new static(\array_intersect_key($this->data, $indices));
+    }
+
+    /**
+     * Omit the items having one of the blacklisted indexes.
+     *
+     * @param array|...string|...int $index Either blacklisted indexes as array or as variads.
+     *
+     * @return self
+     */
+    public function omit($index)
+    {
+        $indices = \array_diff(
+            \array_keys($this->data),
+            \is_array($index) ? $index : \func_get_args()
+        );
+
+        return $this->pick($indices);
+    }
+
+    /**
      * A static shortcut to constructor.
      *
      * @param mixed $data
