@@ -7,7 +7,7 @@ class UnderscoreArray extends UnderscoreCollection
     /**
      * Get the first n items.
      *
-     * @param integer $n
+     * @param int $n
      *
      * @return array
      */
@@ -35,7 +35,7 @@ class UnderscoreArray extends UnderscoreCollection
     /**
      * Get the last n items.
      *
-     * @param integer $n
+     * @param int $n
      *
      * @return array
      */
@@ -65,8 +65,8 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @internal
      *
-     * @param integer $n
-     * @param boolean $isFirst From first if true, else last.
+     * @param int  $n
+     * @param bool $isFirst From first if true, else last.
      *
      * @return array
      */

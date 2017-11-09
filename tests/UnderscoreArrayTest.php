@@ -75,7 +75,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
             'difference'
         );
 
-       $this->assertSame(
+        $this->assertSame(
             ['a' => 3, 'b' => [4]],
             _::_($array)->without([1, 2])->get(),
             'without'

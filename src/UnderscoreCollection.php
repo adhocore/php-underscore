@@ -100,7 +100,7 @@ class UnderscoreCollection extends UnderscoreBase
      * Find the first item (or index) that passes given truth test.
      *
      * @param callable $fn       The truth test callback.
-     * @param boolean  $useValue Whether to return value or the index on match.
+     * @param bool     $useValue Whether to return value or the index on match.
      *
      * @return mixed|null
      */
@@ -388,7 +388,7 @@ class UnderscoreCollection extends UnderscoreBase
     /**
      * Get upto n items in random order.
      *
-     * @param integer $n Number of items to include.
+     * @param int $n Number of items to include.
      *
      * @return self
      */
