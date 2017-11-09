@@ -8,10 +8,10 @@ if (!\function_exists('underscore')) {
      *
      * @param mixed $data
      *
-     * @return Ahc\Underscore\Underscore
+     * @return \Ahc\Underscore\Underscore
      */
     function underscore($data = [])
     {
-        return new Ahc\Underscore\Underscore($data);
+        return new \Ahc\Underscore\Underscore($data);
     }
 }
