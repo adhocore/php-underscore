@@ -2,7 +2,7 @@
 
 namespace Ahc\Underscore\Tests;
 
-use Ahc\Underscore\UnderscoreBase as _;
+use Ahc\Underscore\Underscore as _;
 
 class Stub
 {
@@ -80,5 +80,49 @@ class UnderscoreBaseTest extends \PHPUnit_Framework_TestCase
         $this->assertSame(['b' => 'B', 1 => ['c', 5]], $array->pick(1, 'b')->get());
         $this->assertSame(['a' => 3, 7], $array->omit([1, 'b'])->get());
         $this->assertSame(['b' => 'B', 1 => ['c', 5]], $array->omit('a', 0)->get());
+    }
+
+    public function test_clone_tap()
+    {
+        $main = _::_(['will', 'be', 'cloned']);
+        $clon = $main->clon();
+
+        $this->assertNotSame($main, $clon, 'hard equal');
+        $this->assertNotSame(spl_object_hash($main), spl_object_hash($clon));
+        $this->assertEquals($main, $clon, 'soft equal');
+        $this->assertSame($main->toArray(), $clon->toArray());
+
+        $tap = $main->tap(function ($und) {
+            return $und->values();
+        });
+
+        $this->assertSame($main, $tap, 'hard equal');
+    }
+
+    /**
+     * @expectedException \Ahc\Underscore\UnderscoreException
+     * @expectedExceptionMessage The mixin with name 'notMixedIn' is not defined
+     */
+    public function test_mixin()
+    {
+        _::mixin('double', function () {
+            return $this->map(function ($v) {
+                return $v * 2;
+            });
+        });
+
+        $und = _::_([10, 20, 30]);
+
+        $this->assertTrue(is_callable([$und, 'double']));
+        $this->assertSame([20, 40, 60], $und->double()->toArray());
+
+        $und->notMixedIn();
+    }
+
+    public function test_valueOf()
+    {
+        $this->assertSame('[]', _::_()->valueOf());
+        $this->assertSame('[1,2]', _::_([1, 2])->valueOf());
+        $this->assertSame('["a","b"]', _::_(['a', 'b'])->valueOf());
     }
 }

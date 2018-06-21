@@ -126,17 +126,17 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function test_firstIndex_lastIndex()
+    public function test_findIndex_findLastIndex()
     {
         $array = _::_([[1, 2], 'a' => 3, 'x' => 4, 'y' => 2, 'b' => 'B']);
 
-        $this->assertSame(0, $array->firstIndex());
-        $this->assertSame('b', $array->lastIndex());
+        $this->assertSame(0, $array->findIndex());
+        $this->assertSame('b', $array->findLastIndex());
 
-        $this->assertSame('x', $array->firstIndex(function ($i) {
+        $this->assertSame('x', $array->findIndex(function ($i) {
             return is_numeric($i) && $i % 2 === 0;
         }));
-        $this->assertSame('y', $array->lastIndex(function ($i) {
+        $this->assertSame('y', $array->findLastIndex(function ($i) {
             return is_numeric($i) && $i % 2 === 0;
         }));
     }
@@ -154,5 +154,30 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
         $this->assertSame([4, 5, 6, 7, 8, 9], _::_()->range(4, 9)->get());
         $this->assertSame([10, 12, 14, 16, 18], _::_()->range(10, 18, 2)->get());
         $this->assertSame([20, 19, 18, 17, 16], _::_()->range(20, 16, -1)->get());
+    }
+
+    public function test_sortedIndex()
+    {
+        $nums = [1, 3, 5, 8, 11];
+        $new  = 9;
+
+        $newIdx = _::_($nums)->sortedIndex($new, null);
+
+        $this->assertSame(4, $newIdx);
+
+        $data = [
+            'a' => ['x' => 1, 'y' => 2],
+            'b' => ['x' => 2, 'y' => 2],
+            'c' => ['x' => 3, 'y' => 3],
+            'd' => ['x' => 4, 'y' => 3],
+            'e' => ['x' => 5, 'y' => 4],
+        ];
+
+        $new    = ['x' => 3, 'y' => 2];
+        $newIdx = _::_($data)->sortedIndex($new, function ($row) {
+            return $row['x'] + $row['y'];
+        });
+
+        $this->assertSame('c', $newIdx);
     }
 }

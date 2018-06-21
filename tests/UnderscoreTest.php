@@ -6,80 +6,64 @@ use Ahc\Underscore\Underscore as _;
 
 class UnderscoreTest extends \PHPUnit_Framework_TestCase
 {
-    public function test_memoize()
+    public function test_constant()
     {
-        $memoSum = _::_()->memoize(function ($a, $b) {
-            echo "sum $a + $b";
+        foreach ([1, 'A', [], new \stdClass()] as $value) {
+            $fn = _::_()->constant($value);
 
-            return $a + $b;
-        });
-
-        // Every time the sum callback is called it echoes something.
-        // But since it is memorized, it should only echo in the first call.
-        ob_start();
-
-        // Call 3 times!
-        $this->assertSame(1 + 2, $memoSum(1, 2));
-        $this->assertSame(1 + 2, $memoSum(1, 2));
-        $this->assertSame(1 + 2, $memoSum(1, 2));
-
-        // Call twice for different args!
-        $this->assertSame(3 + 2, $memoSum(3, 2));
-        $this->assertSame(3 + 2, $memoSum(3, 2));
-
-        $buffer = ob_get_clean();
-
-        $this->assertSame(1, substr_count($buffer, 'sum 1 + 2'),
-            'Should be called only once, subsequent calls uses memo'
-        );
-        $this->assertSame(1, substr_count($buffer, 'sum 3 + 2'),
-            'Should be called only once, subsequent calls uses memo'
-        );
+            $this->assertSame($value, $fn());
+        }
     }
 
-    public function test_delay()
+    public function test_noop()
     {
-        $callback = function () {
-            // Do nothing!
-        };
+        $epsilon = 0.0000000001;
 
-        // Calibrate time taken by callback!
-        $cTime = microtime(1);
-        $callback();
-        $cTime = microtime(1) - $cTime;
+        $t = microtime(1);
+        $m = memory_get_usage();
+        $x = _::_()->noop();
+        $t = microtime(1) - $t;
+        $m = memory_get_usage() - $m;
 
-        // Now delay this callback by 10millis (0.01sec).
-        $delayCall = _::_()->delay($callback, 10);
-
-        $time = microtime(1);
-        $delayCall();
-        $time = microtime(1) - $time;
-
-        // The overall time must be >= (cTime + 1sec).
-        $this->assertGreaterThanOrEqual(0.01 + $cTime, $time);
+        $this->assertLessThanOrEqual($t, $epsilon);
+        $this->assertLessThanOrEqual($m, $epsilon);
     }
 
-    public function test_throttle()
+    public function test_times()
     {
-        $callback = function () {
-            echo 'throttle';
+        $fn = function ($i) {
+            return $i * 2;
         };
 
-        // Throttle the call for once per 10millis (0.01 sec)
-        // So that for a period of 300millis it should be actually called at most 3 times.
-        $throtCall = _::_()->throttle($callback, 10);
+        $o = _::_()->times(5, $fn);
 
-        ob_start();
+        $this->assertSame([0, 2, 4, 6, 8], $o->toArray());
+    }
 
-        $start = microtime(1);
-        while (microtime(1) - $start <= 0.031) {
-            $throtCall();
+    public function test_random()
+    {
+        $i = 10;
+
+        while ($i--) {
+            $cases[rand(1, 10)] = rand(11, 20);
         }
 
-        $buffer = ob_get_clean();
+        foreach ($cases as $l => $r) {
+            $rand = _::_()->random($l, $r);
 
-        $this->assertLessThanOrEqual(3, substr_count($buffer, 'throttle'),
-            'Should be called only once, subsequent calls uses memo'
-        );
+            $this->assertGreaterThanOrEqual($l, $rand);
+            $this->assertLessThanOrEqual($r, $rand);
+        }
+    }
+
+    public function test_unique_id()
+    {
+        $u  = _::_()->uniqueId();
+        $u1 = _::_()->uniqueId();
+        $u3 = _::_()->uniqueId('id:');
+
+        $this->assertSame('1', $u);
+        $this->assertSame('2', $u1);
+        $this->assertSame('id:3', $u3);
     }
 }
