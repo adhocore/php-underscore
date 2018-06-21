@@ -31,7 +31,7 @@ final class Underscore extends UnderscoreFunction
     /**
      * Run callable n times and create new collection.
      *
-     * @param int $n
+     * @param int      $n
      * @param callable $fn
      *
      * @return self

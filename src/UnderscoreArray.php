@@ -122,7 +122,7 @@ class UnderscoreArray extends UnderscoreCollection
     /**
      * Gets the unique items using the id resulted from callback.
      *
-     * @param callback|string $fn The callback. String is resolved to value of that index.
+     * @param callable|string $fn The callback. String is resolved to value of that index.
      *
      * @return self
      */
@@ -143,7 +143,7 @@ class UnderscoreArray extends UnderscoreCollection
     /**
      * Alias of unique().
      *
-     * @param callback|string $fn The callback. String is resolved to value of that index.
+     * @param callable|string $fn The callback. String is resolved to value of that index.
      *
      * @return self
      */
@@ -292,7 +292,7 @@ class UnderscoreArray extends UnderscoreCollection
      * Note that the initial stack must be sorted already.
      *
      * @param $object             The new object which needs to be adjusted in stack.
-     * @param callback|string $fn The comparator callback.
+     * @param callable|string $fn The comparator callback.
      *
      * @return string|int|null
      */
