@@ -2,77 +2,75 @@
 
 namespace Ahc\Underscore;
 
-final class Underscore extends UnderscoreArray
+final class Underscore extends UnderscoreFunction
 {
     /**
-     * Returns a callable which when invoked caches the result for given arguments
-     * and reuses that result in subsequent calls.
+     * Generates a function that always returns a constant value.
      *
-     * @param callable $fn The main callback.
+     * @param mixed $value
      *
-     * @return mixed
+     * @return callable
      */
-    public function memoize(callable $fn)
+    public function constant($value)
     {
-        static $memo = [];
-
-        return function () use (&$memo, $fn) {
-            $hash = \md5(\json_encode($args = \func_get_args()));
-
-            if (isset($memo[$hash])) {
-                return $memo[$hash];
-            }
-
-            return $memo[$hash] = \call_user_func_array($fn, $args);
+        return function () use ($value) {
+            return $value;
         };
     }
 
     /**
-     * Cache the result of callback for given arguments and reuse that in subsequent call.
+     * No operation!
      *
-     * @param callable $fn   The main callback.
-     * @param int      $wait The time to wait in millisec.
-     *
-     * @return mixed
+     * @return void
      */
-    public function delay(callable $fn, $wait)
+    public function noop()
     {
-        return function () use ($fn, $wait) {
-            \usleep(1000 * $wait);
-
-            return \call_user_func_array($fn, \func_get_args());
-        };
+        // ;)
     }
 
     /**
-     * Returns a callable that wraps given callable which can be only invoked
-     * at most once per given $wait threshold.
+     * Run callable n times and create new collection.
      *
-     * @param callable $fn   The main callback.
-     * @param int      $wait The callback will only be triggered at most once within this period.
+     * @param int      $n
+     * @param callable $fn
      *
-     * @return mixed The return set of callback if runnable else the previous cache.
+     * @return self
      */
-    public function throttle(callable $fn, $wait)
+    public function times($n, callable $fn)
     {
-        static $previous = 0;
-        static $result   = null;
+        $data = [];
 
-        return function () use ($fn, &$previous, &$result, &$wait) {
-            $now = $this->now();
+        for ($i = 0; $i < $n; $i++) {
+            $data[$i] = $fn($i);
+        }
 
-            if (!$previous) {
-                $previous = $now;
-            }
+        return new static($data);
+    }
 
-            $remaining = $wait - ($now - $previous);
+    /**
+     * Return a random integer between min and max (inclusive).
+     *
+     * @param int $min
+     * @param int $max
+     *
+     * @return int
+     */
+    public function random($min, $max)
+    {
+        return \mt_rand($min, $max);
+    }
 
-            if ($remaining <= 0 || $remaining > $wait) {
-                $previous = $now;
-                $result   = \call_user_func_array($fn, \func_get_args());
-            }
+    /**
+     * Generate unique ID (unique for current go/session).
+     *
+     * @param string $prefix
+     *
+     * @return string
+     */
+    public function uniqueId($prefix = '')
+    {
+        static $id = 0;
 
-            return $result;
-        };
+        return $prefix . (++$id);
     }
 }

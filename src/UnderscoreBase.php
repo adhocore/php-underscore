@@ -4,10 +4,13 @@ namespace Ahc\Underscore;
 
 class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
-    const VERSION = '0.0.1';
+    const VERSION = '0.0.2';
 
     /** @var array The array manipulated by this Underscore instance */
     protected $data;
+
+    /** @var array Custom userland functionality through named callbacks */
+    protected static $mixins = [];
 
     /**
      * Constructor.
@@ -205,6 +208,8 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
 
     /**
      * Alias of count().
+     *
+     * @return int
      */
     public function size()
     {
@@ -329,9 +334,75 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
+     * Creates a shallow copy.
+     *
+     * @return self
+     */
+    public function clon()
+    {
+        return clone $this;
+    }
+
+    /**
+     * Invokes callback fn with clone and returns original self.
+     *
+     * @param callable $fn
+     *
+     * @return self
+     */
+    public function tap(callable $fn)
+    {
+        $fn($this->clon());
+
+        return $this;
+    }
+
+    /**
+     * Adds a custom handler/method to instance. The handler is bound to this instance.
+     *
+     * @param string   $name
+     * @param \Closure $fn
+     *
+     * @return self
+     */
+    public static function mixin($name, \Closure $fn)
+    {
+        static::$mixins[$name] = $fn;
+    }
+
+    /**
+     * Calls the registered mixin by its name.
+     *
+     * @param string $name
+     * @param array  $args
+     *
+     * @return self
+     */
+    public function __call($method, $args)
+    {
+        if (isset(static::$mixins[$method])) {
+            $method = \Closure::bind(static::$mixins[$method], $this);
+
+            return $method($args);
+        }
+
+        throw new UnderscoreException("The mixin with name '$method' is not defined");
+    }
+
+    /**
+     * Get string value (JSON representation) of this instance.
+     *
+     * @return string
+     */
+    public function valueOf()
+    {
+        return (string) $this;
+    }
+
+    /**
      * A static shortcut to constructor.
      *
-     * @param mixed $data
+     * @param array|mixed $data Array or array like or array convertible.
      *
      * @return self
      */

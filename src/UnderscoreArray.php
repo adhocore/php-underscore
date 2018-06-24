@@ -18,6 +18,10 @@ class UnderscoreArray extends UnderscoreCollection
 
     /**
      * Alias of first().
+     *
+     * @param int $n
+     *
+     * @return array
      */
     public function head($n = 1)
     {
@@ -26,6 +30,10 @@ class UnderscoreArray extends UnderscoreCollection
 
     /**
      * Alias of first().
+     *
+     * @param int $n
+     *
+     * @return array
      */
     public function take($n = 1)
     {
@@ -46,6 +54,10 @@ class UnderscoreArray extends UnderscoreCollection
 
     /**
      * Alias of last().
+     *
+     * @param int $n
+     *
+     * @return array
      */
     public function tail($n = 1)
     {
@@ -54,6 +66,10 @@ class UnderscoreArray extends UnderscoreCollection
 
     /**
      * Alias of last().
+     *
+     * @param int $n
+     *
+     * @return array
      */
     public function drop($n = 1)
     {
@@ -106,7 +122,7 @@ class UnderscoreArray extends UnderscoreCollection
     /**
      * Gets the unique items using the id resulted from callback.
      *
-     * @param callback|string $fn The callback. String is resolved to value of that index.
+     * @param callable|string $fn The callback. String is resolved to value of that index.
      *
      * @return self
      */
@@ -126,6 +142,10 @@ class UnderscoreArray extends UnderscoreCollection
 
     /**
      * Alias of unique().
+     *
+     * @param callable|string $fn The callback. String is resolved to value of that index.
+     *
+     * @return self
      */
     public function uniq($fn = null)
     {
@@ -149,7 +169,11 @@ class UnderscoreArray extends UnderscoreCollection
     }
 
     /**
-     * Alias of without().
+     * Alias of difference().
+     *
+     * @param array|mixed $data Array or array like or array convertible.
+     *
+     * @return self
      */
     public function without($data)
     {
@@ -203,7 +227,7 @@ class UnderscoreArray extends UnderscoreCollection
     /**
      * Hydrate the items into given class or stdClass.
      *
-     * @param string $className FQCN of the class whose constructor accepts two parameters: value and index.
+     * @param string|null $className FQCN of the class whose constructor accepts two parameters: value and index.
      *
      * @return self
      */
@@ -221,19 +245,19 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return mixed|null
      */
-    public function firstIndex($fn = null)
+    public function findIndex($fn = null)
     {
         return $this->find($this->valueFn($fn), false);
     }
 
     /**
-     * Find the larst index that passes given truth test.
+     * Find the last index that passes given truth test.
      *
      * @param callable $fn The truth test callback.
      *
      * @return mixed|null
      */
-    public function lastIndex($fn = null)
+    public function findLastIndex($fn = null)
     {
         return (new static(\array_reverse($this->data, true)))->find($this->valueFn($fn), false);
     }
@@ -260,6 +284,37 @@ class UnderscoreArray extends UnderscoreCollection
     public function lastIndexOf($value)
     {
         return (false === $index = \array_search($value, \array_reverse($this->data, true))) ? null : $index;
+    }
+
+    /**
+     * Gets the smallest index at which an object should be inserted so as to maintain order.
+     *
+     * Note that the initial stack must be sorted already.
+     *
+     * @param $object             The new object which needs to be adjusted in stack.
+     * @param callable|string $fn The comparator callback.
+     *
+     * @return string|int|null
+     */
+    public function sortedIndex($object, $fn)
+    {
+        $low   = 0;
+        $high  = $this->count();
+        $data  = $this->values();
+        $fn    = $this->valueFn($fn);
+        $value = $fn($object);
+        $keys  = $this->keys();
+
+        while ($low < $high) {
+            $mid = \intval(($low + $high) / 2);
+            if ($fn($data[$mid]) < $value) {
+                $low = $mid + 1;
+            } else {
+                $high = $mid;
+            }
+        }
+
+        return isset($keys[$low]) ? $keys[$low] : null;
     }
 
     /**
