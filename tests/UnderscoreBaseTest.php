@@ -54,27 +54,27 @@ class UnderscoreBaseTest extends \PHPUnit_Framework_TestCase
     {
         $array = [[1, 2], 'a' => 3, 7, 'b' => 'B'];
 
-        $this->assertSame(array_keys($array), _::_($array)->keys()->get());
-        $this->assertSame(array_values($array), _::_($array)->values()->get());
+        $this->assertSame(array_keys($array), underscore($array)->keys()->get());
+        $this->assertSame(array_values($array), underscore($array)->values()->get());
     }
 
     public function test_pairs()
     {
         $array = ['a' => 3, 7, 'b' => 'B'];
 
-        $this->assertSame(['a' => ['a', 3], 0 => [0, 7], 'b' => ['b', 'B']], _::_($array)->pairs()->get());
+        $this->assertSame(['a' => ['a', 3], 0 => [0, 7], 'b' => ['b', 'B']], underscore($array)->pairs()->get());
     }
 
     public function test_invert()
     {
         $array = ['a' => 3, 7, 'b' => 'B'];
 
-        $this->assertSame(array_flip($array), _::_($array)->invert()->get());
+        $this->assertSame(array_flip($array), underscore($array)->invert()->get());
     }
 
     public function test_pick_omit()
     {
-        $array = _::_(['a' => 3, 7, 'b' => 'B', 1 => ['c', 5]]);
+        $array = underscore(['a' => 3, 7, 'b' => 'B', 1 => ['c', 5]]);
 
         $this->assertSame([7, 'b' => 'B'], $array->pick([0, 'b'])->get());
         $this->assertSame(['b' => 'B', 1 => ['c', 5]], $array->pick(1, 'b')->get());
@@ -84,7 +84,7 @@ class UnderscoreBaseTest extends \PHPUnit_Framework_TestCase
 
     public function test_clone_tap()
     {
-        $main = _::_(['will', 'be', 'cloned']);
+        $main = underscore(['will', 'be', 'cloned']);
         $clon = $main->clon();
 
         $this->assertNotSame($main, $clon, 'hard equal');
@@ -111,7 +111,7 @@ class UnderscoreBaseTest extends \PHPUnit_Framework_TestCase
             });
         });
 
-        $und = _::_([10, 20, 30]);
+        $und = underscore([10, 20, 30]);
 
         $this->assertTrue(is_callable([$und, 'double']));
         $this->assertSame([20, 40, 60], $und->double()->toArray());
@@ -121,8 +121,8 @@ class UnderscoreBaseTest extends \PHPUnit_Framework_TestCase
 
     public function test_valueOf()
     {
-        $this->assertSame('[]', _::_()->valueOf());
-        $this->assertSame('[1,2]', _::_([1, 2])->valueOf());
-        $this->assertSame('["a","b"]', _::_(['a', 'b'])->valueOf());
+        $this->assertSame('[]', underscore()->valueOf());
+        $this->assertSame('[1,2]', underscore([1, 2])->valueOf());
+        $this->assertSame('["a","b"]', underscore(['a', 'b'])->valueOf());
     }
 }
