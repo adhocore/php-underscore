@@ -1,6 +1,8 @@
 <?php
 
-\class_alias('Ahc\Underscore\Underscore', 'Ahc\Underscore');
+use Ahc\Underscore\Underscore;
+
+\class_alias(Underscore::class, 'Ahc\\Underscore');
 
 if (!\function_exists('underscore')) {
     /**
@@ -8,10 +10,10 @@ if (!\function_exists('underscore')) {
      *
      * @param mixed $data
      *
-     * @return \Ahc\Underscore\Underscore
+     * @return Underscore
      */
     function underscore($data = [])
     {
-        return new \Ahc\Underscore\Underscore($data);
+        return new Underscore($data);
     }
 }
