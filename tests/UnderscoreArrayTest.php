@@ -2,7 +2,7 @@
 
 namespace Ahc\Underscore\Tests;
 
-use Ahc\Underscore\UnderscoreArray as _;
+use Ahc\Underscore\Underscore as _;
 
 class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 {
@@ -10,27 +10,27 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
     {
         $array = range(rand(5, 10), rand(15, 20));
 
-        $this->assertSame($array[0], _::_($array)->first(), 'first');
-        $this->assertSame(array_reverse($array)[0], _::_($array)->last(), 'last');
+        $this->assertSame($array[0], underscore($array)->first(), 'first');
+        $this->assertSame(array_reverse($array)[0], underscore($array)->last(), 'last');
 
         $array = ['x' => ['first'], 'z' => 'last'];
 
-        $this->assertSame($array['x'], _::_($array)->head(), 'first');
-        $this->assertSame($array['z'], _::_($array)->tail(), 'last');
+        $this->assertSame($array['x'], underscore($array)->head(), 'first');
+        $this->assertSame($array['z'], underscore($array)->tail(), 'last');
 
         $array = range(1, 5);
 
-        $this->assertSame([1, 2, 3], _::_($array)->take(3), 'first 3');
-        $this->assertSame([1, 2, 3, 4, 5], _::_($array)->first(6), 'first 6 (n + 1)');
-        $this->assertSame([2 => 3, 3 => 4, 4 => 5], _::_($array)->drop(3), 'last 3');
-        $this->assertSame([1, 2, 3, 4, 5], _::_($array)->last(6), 'last 6 (n + 1)');
+        $this->assertSame([1, 2, 3], underscore($array)->take(3), 'first 3');
+        $this->assertSame([1, 2, 3, 4, 5], underscore($array)->first(6), 'first 6 (n + 1)');
+        $this->assertSame([2 => 3, 3 => 4, 4 => 5], underscore($array)->drop(3), 'last 3');
+        $this->assertSame([1, 2, 3, 4, 5], underscore($array)->last(6), 'last 6 (n + 1)');
     }
 
     public function test_compact()
     {
         $array = [0, 'a', '', [], 2, [1]];
 
-        $this->assertSame([1 => 'a', 4 => 2, 5 => [1]], _::_($array)->compact()->get(), 'first');
+        $this->assertSame([1 => 'a', 4 => 2, 5 => [1]], underscore($array)->compact()->get(), 'first');
     }
 
     public function test_flatten()
@@ -39,7 +39,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             [0, 'a', '', 1, 2, 'b', 3, 4, 'c', 5, 'd'],
-            _::_($array)->flatten()->get(),
+            underscore($array)->flatten()->get(),
             'flatten'
         );
     }
@@ -50,7 +50,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             [0, 'a', '', 1, 6 => 2, 8 => 3],
-            _::_($array)->unique()->get(),
+            underscore($array)->unique()->get(),
             'unique'
         );
 
@@ -58,7 +58,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             ['a', '', 3 => 1, 5 => 0, 7 => 'b', 8 => 3, 9 => 2],
-            _::_($array)->uniq(function ($i) {
+            underscore($array)->uniq(function ($i) {
                 return $i;
             })->get(),
             'uniq'
@@ -71,13 +71,13 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             [1 => 2, 'a' => 3],
-            _::_($array)->difference([1, [4]])->get(),
+            underscore($array)->difference([1, [4]])->get(),
             'difference'
         );
 
         $this->assertSame(
             ['a' => 3, 'b' => [4]],
-            _::_($array)->without([1, 2])->get(),
+            underscore($array)->without([1, 2])->get(),
             'without'
         );
     }
@@ -88,7 +88,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             [1, 2, 'a' => 4, 3, 'b' => [5]],
-            _::_($array)->union([3, 'a' => 4, 'b' => [5]])->get(),
+            underscore($array)->union([3, 'a' => 4, 'b' => [5]])->get(),
             'union'
         );
     }
@@ -99,7 +99,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             [1 => 2, 'a' => 3],
-            _::_($array)->intersection([2, 'a' => 3, 3])->get(),
+            underscore($array)->intersection([2, 'a' => 3, 3])->get(),
             'intersection'
         );
     }
@@ -110,7 +110,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             [[1, 2], [2, 4], 'a' => [3, 5], 'b' => ['B', null]],
-            _::_($array)->zip([2, 4, 'a' => 5])->get(),
+            underscore($array)->zip([2, 4, 'a' => 5])->get(),
             'zip'
         );
     }
@@ -119,7 +119,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
     {
         $array = [[1, 2], 'a' => 3, 'b' => 'B'];
 
-        foreach (_::_($array)->object() as $index => $value) {
+        foreach (underscore($array)->object() as $index => $value) {
             $this->assertTrue(is_object($value));
             $this->assertSame($index, $value->index);
             $this->assertSame($array[$index], $value->value);
@@ -128,7 +128,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
     public function test_findIndex_findLastIndex()
     {
-        $array = _::_([[1, 2], 'a' => 3, 'x' => 4, 'y' => 2, 'b' => 'B']);
+        $array = underscore([[1, 2], 'a' => 3, 'x' => 4, 'y' => 2, 'b' => 'B']);
 
         $this->assertSame(0, $array->findIndex());
         $this->assertSame('b', $array->findLastIndex());
@@ -143,7 +143,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
     public function test_indexOf_lastIndexOf()
     {
-        $array = _::_([[1, 2], 'a' => 2, 'x' => 4, 'y' => 2, 'b' => 'B']);
+        $array = underscore([[1, 2], 'a' => 2, 'x' => 4, 'y' => 2, 'b' => 'B']);
 
         $this->assertSame('a', $array->indexOf(2));
         $this->assertSame('y', $array->lastIndexOf(2));
@@ -151,9 +151,9 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
 
     public function test_range()
     {
-        $this->assertSame([4, 5, 6, 7, 8, 9], _::_()->range(4, 9)->get());
-        $this->assertSame([10, 12, 14, 16, 18], _::_()->range(10, 18, 2)->get());
-        $this->assertSame([20, 19, 18, 17, 16], _::_()->range(20, 16, -1)->get());
+        $this->assertSame([4, 5, 6, 7, 8, 9], underscore()->range(4, 9)->get());
+        $this->assertSame([10, 12, 14, 16, 18], underscore()->range(10, 18, 2)->get());
+        $this->assertSame([20, 19, 18, 17, 16], underscore()->range(20, 16, -1)->get());
     }
 
     public function test_sortedIndex()
@@ -161,7 +161,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
         $nums = [1, 3, 5, 8, 11];
         $new  = 9;
 
-        $newIdx = _::_($nums)->sortedIndex($new, null);
+        $newIdx = underscore($nums)->sortedIndex($new, null);
 
         $this->assertSame(4, $newIdx);
 
@@ -174,7 +174,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
         ];
 
         $new    = ['x' => 3, 'y' => 2];
-        $newIdx = _::_($data)->sortedIndex($new, function ($row) {
+        $newIdx = underscore($data)->sortedIndex($new, function ($row) {
             return $row['x'] + $row['y'];
         });
 

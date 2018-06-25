@@ -2,13 +2,11 @@
 
 namespace Ahc\Underscore\Tests;
 
-use Ahc\Underscore\UnderscoreFunction as _;
-
 class UnderscoreFunctionTest extends \PHPUnit_Framework_TestCase
 {
     public function test_memoize()
     {
-        $memoSum = _::_()->memoize(function ($a, $b) {
+        $memoSum = underscore()->memoize(function ($a, $b) {
             echo "sum $a + $b";
 
             return $a + $b;
@@ -49,7 +47,7 @@ class UnderscoreFunctionTest extends \PHPUnit_Framework_TestCase
         $cTime = microtime(1) - $cTime;
 
         // Now delay this callback by 10millis (0.01sec).
-        $delayCall = _::_()->delay($callback, 10);
+        $delayCall = underscore()->delay($callback, 10);
 
         $time = microtime(1);
         $delayCall();
@@ -67,7 +65,7 @@ class UnderscoreFunctionTest extends \PHPUnit_Framework_TestCase
 
         // Throttle the call for once per 10millis (0.01 sec)
         // So that for a period of 300millis it should be actually called at most 3 times.
-        $throtCall = _::_()->throttle($callback, 10);
+        $throtCall = underscore()->throttle($callback, 10);
 
         ob_start();
 
@@ -85,7 +83,7 @@ class UnderscoreFunctionTest extends \PHPUnit_Framework_TestCase
 
     public function test_compose()
     {
-        $c = _::_()->compose('strlen', 'strtolower', 'strtoupper');
+        $c = underscore()->compose('strlen', 'strtolower', 'strtoupper');
 
         $this->assertSame(7, $c('aBc.xYz'));
     }
