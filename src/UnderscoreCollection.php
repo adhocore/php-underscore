@@ -39,18 +39,6 @@ class UnderscoreCollection extends UnderscoreBase
     }
 
     /**
-     * Alias of map().
-     *
-     * @param callable $fn The callback.
-     *
-     * @return self
-     */
-    public function collect(callable $fn)
-    {
-        return $this->map($fn);
-    }
-
-    /**
      * Iteratively reduce the array to a single value using a callback function.
      *
      * @param callable $fn   The callback.
@@ -64,32 +52,6 @@ class UnderscoreCollection extends UnderscoreBase
     }
 
     /**
-     * Alias of reduce().
-     *
-     * @param callable $fn   The callback.
-     * @param mixed    $memo The initial value carried over to each iteration and returned finally.
-     *
-     * @return mixed
-     */
-    public function foldl(callable $fn, $memo)
-    {
-        return $this->reduce($fn, $memo);
-    }
-
-    /**
-     * Alias of reduce().
-     *
-     * @param callable $fn   The callback.
-     * @param mixed    $memo The initial value carried over to each iteration and returned finally.
-     *
-     * @return mixed
-     */
-    public function inject(callable $fn, $memo)
-    {
-        return $this->reduce($fn, $memo);
-    }
-
-    /**
      * Same as reduce but applies the callback from right most item first.
      *
      * @param callable $fn   The callback.
@@ -100,19 +62,6 @@ class UnderscoreCollection extends UnderscoreBase
     public function reduceRight(callable $fn, $memo)
     {
         return \array_reduce(\array_reverse($this->data, true), $fn, $memo);
-    }
-
-    /**
-     * Alias of reduceRight().
-     *
-     * @param callable $fn   The callback.
-     * @param mixed    $memo The initial value carried over to each iteration and returned finally.
-     *
-     * @return mixed
-     */
-    public function foldr(callable $fn, $memo)
-    {
-        return $this->reduceRight($fn, $memo);
     }
 
     /**
@@ -133,19 +82,6 @@ class UnderscoreCollection extends UnderscoreBase
     }
 
     /**
-     * Alias of find().
-     *
-     * @param callable $fn       The truth test callback.
-     * @param bool     $useValue Whether to return value or the index on match.
-     *
-     * @return mixed|null
-     */
-    public function detect(callable $fn)
-    {
-        return $this->find($fn);
-    }
-
-    /**
      * Find and return all the items that passes given truth test.
      *
      * @param callable|string|null $fn The truth test callback.
@@ -161,18 +97,6 @@ class UnderscoreCollection extends UnderscoreBase
         $data = \array_filter($this->data, $fn, \ARRAY_FILTER_USE_BOTH);
 
         return new static($data);
-    }
-
-    /**
-     * Alias of filter().
-     *
-     * @param callable|string|null $fn The truth test callback.
-     *
-     * @return self
-     */
-    public function select(callable $fn = null)
-    {
-        return $this->filter($fn);
     }
 
     /**
@@ -202,18 +126,6 @@ class UnderscoreCollection extends UnderscoreBase
     }
 
     /**
-     * Alias of every().
-     *
-     * @param callable $fn The truth test callback.
-     *
-     * @return bool
-     */
-    public function all(callable $fn)
-    {
-        return $this->every($fn);
-    }
-
-    /**
      * Tests if some (at least one) of the items pass given truth test.
      *
      * @param callable $fn The truth test callback.
@@ -223,18 +135,6 @@ class UnderscoreCollection extends UnderscoreBase
     public function some(callable $fn)
     {
         return $this->match($fn, false);
-    }
-
-    /**
-     * Alias of some().
-     *
-     * @param callable $fn The truth test callback.
-     *
-     * @return bool
-     */
-    public function any(callable $fn)
-    {
-        return $this->some($fn);
     }
 
     /**
@@ -268,14 +168,6 @@ class UnderscoreCollection extends UnderscoreBase
     public function contains($item)
     {
         return \in_array($item, $this->data);
-    }
-
-    /**
-     * Alias of contains().
-     */
-    public function includes($item)
-    {
-        return $this->contains($item);
     }
 
     /**

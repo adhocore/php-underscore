@@ -4,6 +4,9 @@ namespace Ahc\Underscore;
 
 class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \JsonSerializable
 {
+    use Arrayizes;
+    use UnderscoreAliases;
+
     const VERSION = '0.0.2';
 
     /** @var array The array manipulated by this Underscore instance */
@@ -13,11 +16,11 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     protected static $mixins = [];
 
     /**
-     * Constructor.
+     * Constructor. Only allow `Ahc\Underscore\Underscore` to be instantiated in userland.
      *
      * @param array|mixed $data Array or array like or array convertible.
      */
-    public function __construct($data = [])
+    protected function __construct($data = [])
     {
         $this->data = \is_array($data) ? $data : $this->asArray($data);
     }
@@ -39,54 +42,13 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
-     * Get data as array.
-     *
-     * @param mixed $data Arbitrary data.
-     * @param bool  $cast Force casting to array!
+     * Get data.
      *
      * @return array
      */
-    public function asArray($data, $cast = true)
+    public function getData()
     {
-        if (\is_array($data)) {
-            return $data;
-        }
-
-        if ($data instanceof static) {
-            return $data->get();
-        }
-
-        // @codeCoverageIgnoreStart
-        if ($data instanceof \Traversable) {
-            return \iterator_to_array($data);
-        }
-        // @codeCoverageIgnoreEnd
-
-        if ($data instanceof \JsonSerializable) {
-            return $data->jsonSerialize();
-        }
-
-        if (\method_exists($data, 'toArray')) {
-            return $data->toArray();
-        }
-
-        return  $cast ? (array) $data : $data;
-    }
-
-    /**
-     * Convert the data items to array.
-     *
-     * @return array
-     */
-    public function toArray()
-    {
-        return \array_map(function ($value) {
-            if (\is_scalar($value)) {
-                return $value;
-            }
-
-            return $this->asArray($value, false);
-        }, $this->data);
+        return $this->data;
     }
 
     /**
@@ -204,16 +166,6 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     public function count()
     {
         return \count($this->data);
-    }
-
-    /**
-     * Alias of count().
-     *
-     * @return int
-     */
-    public function size()
-    {
-        return $this->count();
     }
 
     /**
@@ -397,17 +349,5 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     public function valueOf()
     {
         return (string) $this;
-    }
-
-    /**
-     * A static shortcut to constructor.
-     *
-     * @param array|mixed $data Array or array like or array convertible.
-     *
-     * @return self
-     */
-    public static function _($data = null)
-    {
-        return new static($data);
     }
 }
