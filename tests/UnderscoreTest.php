@@ -15,6 +15,11 @@ class UnderscoreTest extends \PHPUnit_Framework_TestCase
         }
     }
 
+    public function test_()
+    {
+        $this->assertInstanceOf(_::class, _::_());
+    }
+
     public function test_noop()
     {
         $epsilon = 0.0000000001;
