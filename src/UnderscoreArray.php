@@ -9,7 +9,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @param int $n
      *
-     * @return array
+     * @return array|mixed With n = 1 (default), it gives one item, which may not be array.
      */
     public function first($n = 1)
     {
@@ -17,63 +17,15 @@ class UnderscoreArray extends UnderscoreCollection
     }
 
     /**
-     * Alias of first().
-     *
-     * @param int $n
-     *
-     * @return array
-     */
-    public function head($n = 1)
-    {
-        return $this->first($n);
-    }
-
-    /**
-     * Alias of first().
-     *
-     * @param int $n
-     *
-     * @return array
-     */
-    public function take($n = 1)
-    {
-        return $this->first($n);
-    }
-
-    /**
      * Get the last n items.
      *
      * @param int $n
      *
-     * @return array
+     * @return array|mixed With n = 1 (default), it gives one item, which may not be array.
      */
     public function last($n = 1)
     {
         return $this->slice($n, false);
-    }
-
-    /**
-     * Alias of last().
-     *
-     * @param int $n
-     *
-     * @return array
-     */
-    public function tail($n = 1)
-    {
-        return $this->last($n);
-    }
-
-    /**
-     * Alias of last().
-     *
-     * @param int $n
-     *
-     * @return array
-     */
-    public function drop($n = 1)
-    {
-        return $this->last($n);
     }
 
     /**
@@ -84,7 +36,7 @@ class UnderscoreArray extends UnderscoreCollection
      * @param int  $n
      * @param bool $isFirst From first if true, else last.
      *
-     * @return array
+     * @return array|mixed With n = 1 (default), it gives one item, which may not be array.
      */
     protected function slice($n, $isFirst = true)
     {
@@ -141,18 +93,6 @@ class UnderscoreArray extends UnderscoreCollection
     }
 
     /**
-     * Alias of unique().
-     *
-     * @param callable|string $fn The callback. String is resolved to value of that index.
-     *
-     * @return self
-     */
-    public function uniq($fn = null)
-    {
-        return $this->unique($fn);
-    }
-
-    /**
      * Get the items whose value is not in given data.
      *
      * @param array|mixed $data Array or array like or array convertible.
@@ -166,18 +106,6 @@ class UnderscoreArray extends UnderscoreCollection
         return $this->filter(function ($value) use ($data) {
             return !\in_array($value, $data);
         });
-    }
-
-    /**
-     * Alias of difference().
-     *
-     * @param array|mixed $data Array or array like or array convertible.
-     *
-     * @return self
-     */
-    public function without($data)
-    {
-        return $this->difference($data);
     }
 
     /**
@@ -265,7 +193,7 @@ class UnderscoreArray extends UnderscoreCollection
     /**
      * Find the first index of given value if available null otherwise.
      *
-     * @param callable $fn The truth test callback.
+     * @param mixed $value The lookup value.
      *
      * @return string|int|null
      */
@@ -277,7 +205,7 @@ class UnderscoreArray extends UnderscoreCollection
     /**
      * Find the last index of given value if available null otherwise.
      *
-     * @param callable $fn The truth test callback.
+     * @param mixed $value The lookup value.
      *
      * @return string|int|null
      */
@@ -291,8 +219,8 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * Note that the initial stack must be sorted already.
      *
-     * @param $object             The new object which needs to be adjusted in stack.
-     * @param callable|string $fn The comparator callback.
+     * @param mixed           $object The new object which needs to be adjusted in stack.
+     * @param callable|string $fn     The comparator callback.
      *
      * @return string|int|null
      */

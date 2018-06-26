@@ -2,13 +2,11 @@
 
 namespace Ahc\Underscore\Tests;
 
-use Ahc\Underscore\UnderscoreCollection as _;
-
 class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 {
     public function test_array_json_props()
     {
-        $_ = _::_([9, 'a' => 'Apple', 5, 8, 'c' => 'Cat']);
+        $_ = underscore([9, 'a' => 'Apple', 5, 8, 'c' => 'Cat']);
 
         $this->assertSame('Apple', $_['a']);
         $this->assertSame(8, $_[2]);
@@ -40,7 +38,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function test_get()
     {
-        $_ = _::_([1, 5, 9]);
+        $_ = underscore([1, 5, 9]);
 
         $this->assertSame([1, 5, 9], $_->get(), 'get all');
         $this->assertSame(5, $_->get(1), 'get by key');
@@ -51,7 +49,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
     public function test_each()
     {
         $answers = [];
-        _::_([1, 2, 3])->each(function ($num) use (&$answers) {
+        underscore([1, 2, 3])->each(function ($num) use (&$answers) {
             $answers[] = $num * 5;
         });
 
@@ -59,7 +57,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(3, $answers, 'callback applied exactly 3 times');
 
         $answers = [];
-        _::_(['one' => 1, 'two' => 2, 'three' => 3])->each(function ($num, $index) use (&$answers) {
+        underscore(['one' => 1, 'two' => 2, 'three' => 3])->each(function ($num, $index) use (&$answers) {
             $answers[] = $index;
         });
 
@@ -68,13 +66,13 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_map_collect()
     {
-        $mapped = _::_([1, 2, 3])->map(function ($num) {
+        $mapped = underscore([1, 2, 3])->map(function ($num) {
             return $num * 2;
         });
 
         $this->assertSame([2, 4, 6], $mapped->get(), 'callback applied on each member');
 
-        $mapped = _::_([['a' => 1], ['a' => 2]])->collect(function ($row) {
+        $mapped = underscore([['a' => 1], ['a' => 2]])->collect(function ($row) {
             return $row['a'];
         });
 
@@ -83,25 +81,25 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_reduce_foldl_inject()
     {
-        $sum = _::_([1, 2, 3])->reduce(function ($sum, $num) {
+        $sum = underscore([1, 2, 3])->reduce(function ($sum, $num) {
             return $num + $sum;
         }, 0);
 
         $this->assertSame(6, $sum, 'sum by reduce');
 
-        $sum = _::_([1, 2, 3])->foldl(function ($sum, $num) {
+        $sum = underscore([1, 2, 3])->foldl(function ($sum, $num) {
             return $num + $sum;
         }, 10);
 
         $this->assertSame(10 + 6, $sum, 'sum by reduce with initial 10');
 
-        $prod = _::_([1, 2, 3, 4])->inject(function ($prod, $num) {
+        $prod = underscore([1, 2, 3, 4])->inject(function ($prod, $num) {
             return $prod * $num;
         }, 1);
 
         $this->assertSame(24, $prod, 'prod by reduce with initial 1');
 
-        $concat = _::_([1, 2, 3, 4])->inject(function ($concat, $num) {
+        $concat = underscore([1, 2, 3, 4])->inject(function ($concat, $num) {
             return $concat . $num;
         }, '');
 
@@ -110,13 +108,13 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_reduceRight_foldr()
     {
-        $sum = _::_([1, 2, 3])->reduce(function ($sum, $num) {
+        $sum = underscore([1, 2, 3])->reduce(function ($sum, $num) {
             return $num + $sum;
         }, 0);
 
         $this->assertSame(6, $sum, 'sum by reduceRight');
 
-        $concat = _::_([1, 2, 3, 4])->foldr(function ($concat, $num) {
+        $concat = underscore([1, 2, 3, 4])->foldr(function ($concat, $num) {
             return $concat . $num;
         }, '');
 
@@ -125,13 +123,13 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_find_detect()
     {
-        $num = _::_([1, 2, 4, 3])->find(function ($num) {
+        $num = underscore([1, 2, 4, 3])->find(function ($num) {
             return $num > 2;
         });
 
         $this->assertSame(4, $num, 'first num gt 2');
 
-        $num = _::_([1, 2, 3])->detect(function ($num) {
+        $num = underscore([1, 2, 3])->detect(function ($num) {
             return $num > 4;
         });
 
@@ -140,13 +138,13 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_filter_select()
     {
-        $gt2 = _::_([1, 2, 4, 0, 3])->filter(function ($num) {
+        $gt2 = underscore([1, 2, 4, 0, 3])->filter(function ($num) {
             return $num > 2;
         });
 
         $this->assertSame([4, 3], array_values($gt2->get()), 'nums gt 2');
 
-        $odds = _::_([1, 2, 3, 4, 5, 7, 6])->select(function ($num) {
+        $odds = underscore([1, 2, 3, 4, 5, 7, 6])->select(function ($num) {
             return $num % 2 === 1;
         });
 
@@ -155,7 +153,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_reject()
     {
-        $evens = _::_([1, 2, 3, 4, 5, 7, 6])->reject(function ($num) {
+        $evens = underscore([1, 2, 3, 4, 5, 7, 6])->reject(function ($num) {
             return $num % 2 !== 0;
         });
 
@@ -164,13 +162,13 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_every_all()
     {
-        $gt0 = _::_([1, 2, 3, 4])->every(function ($num) {
+        $gt0 = underscore([1, 2, 3, 4])->every(function ($num) {
             return $num > 0;
         });
 
         $this->assertTrue($gt0, 'every nums gt 0');
 
-        $lt0 = _::_([1, 2, 3, 4])->all(function ($num) {
+        $lt0 = underscore([1, 2, 3, 4])->all(function ($num) {
             return $num < 0;
         });
 
@@ -179,13 +177,13 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_some_any()
     {
-        $pos = _::_([1, 2, 0, 4, -1])->some(function ($num) {
+        $pos = underscore([1, 2, 0, 4, -1])->some(function ($num) {
             return $num > 0;
         });
 
         $this->assertTrue($pos, 'some positive numbers');
 
-        $neg = _::_([1, 2, 4])->any(function ($num) {
+        $neg = underscore([1, 2, 4])->any(function ($num) {
             return $num < 0;
         });
 
@@ -194,18 +192,18 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_contains_includes()
     {
-        $contains = _::_([1, 2, 4])->contains(2);
+        $contains = underscore([1, 2, 4])->contains(2);
 
         $this->assertTrue($contains, 'contains 2');
 
-        $includes = _::_([1, 2, 4])->includes(-3);
+        $includes = underscore([1, 2, 4])->includes(-3);
 
         $this->assertFalse($includes, 'doesnt include -3');
     }
 
     public function test_invoke()
     {
-        $sum = _::_([1, 2, 4])->invoke(function () {
+        $sum = underscore([1, 2, 4])->invoke(function () {
             return array_sum(func_get_args());
         });
 
@@ -214,7 +212,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_pluck()
     {
-        $people = _::_([['name' => 'moe', 'age' => 30], ['name' => 'curly']]);
+        $people = underscore([['name' => 'moe', 'age' => 30], ['name' => 'curly']]);
         $names  = $people->pluck('name')->get();
         $ages   = $people->pluck('age')->get();
 
@@ -224,7 +222,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_where()
     {
-        $list = _::_([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 2], ['a' => 1, 'b' => 3]]);
+        $list = underscore([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 2], ['a' => 1, 'b' => 3]]);
         $a1   = $list->where(['a' => 1])->get();
         $a1b2 = $list->where(['a' => 1, 'b' => 2])->get();
         $c3   = $list->where(['c' => 3])->get();
@@ -236,7 +234,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_findWhere()
     {
-        $list = _::_([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 2], ['a' => 1, 'b' => 3]]);
+        $list = underscore([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 2], ['a' => 1, 'b' => 3]]);
         $b3   = $list->findWhere(['b' => 3]);
         $a2b1 = $list->findWhere(['a' => 2, 'b' => 1]);
 
@@ -246,7 +244,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_max_min()
     {
-        $list = _::_([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 3], ['a' => 0, 'b' => 1]]);
+        $list = underscore([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 3], ['a' => 0, 'b' => 1]]);
 
         $this->assertSame(2, $list->max('a'), 'max a = 2');
         $this->assertSame(3, $list->max('b'), 'max a = 3');
@@ -261,7 +259,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
             return $i['b'] - $i['a'];
         }), 'max diff of b and a');
 
-        $list = _::_([1, 99, 9, -10, 1000, false, 0, 'string', -99, 10000, 87, null]);
+        $list = underscore([1, 99, 9, -10, 1000, false, 0, 'string', -99, 10000, 87, null]);
 
         $this->assertSame(10000, $list->max(), 'max = 10000');
         $this->assertSame(-99, $list->min(), 'min = -99');
@@ -270,7 +268,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
     public function test_shuffle()
     {
         $pool = range(1, 5);
-        $shuf = _::_($pool)->shuffle()->get();
+        $shuf = underscore($pool)->shuffle()->get();
 
         foreach ($shuf as $key => $value) {
             $this->assertArrayHasKey($key, $pool, 'shuffled item is one from pool');
@@ -285,7 +283,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
         $pool = range(10, 5, -1);
 
         foreach ([1, 2, 3] as $n) {
-            $samp = _::_($pool)->sample($n)->get();
+            $samp = underscore($pool)->sample($n)->get();
 
             foreach ($samp as $key => $value) {
                 $this->assertArrayHasKey($key, $pool, 'sampled item is one from pool');
@@ -299,15 +297,15 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
     public function test_sortBy()
     {
         $sort = $init = range(1, 15);
-        $sort = _::_($sort)->shuffle()->get();
+        $sort = underscore($sort)->shuffle()->get();
 
         $this->assertNotSame($init, $sort, 'Should be random');
 
-        $sort = _::_($sort)->sortBy(null)->get();
+        $sort = underscore($sort)->sortBy(null)->get();
 
         $this->assertSame($init, $sort, 'Should be sorted');
 
-        $list = _::_([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 3], ['a' => 0, 'b' => 1]]);
+        $list = underscore([['a' => 1, 'b' => 2], ['a' => 2, 'b' => 3], ['a' => 0, 'b' => 1]]);
 
         $byA = $list->sortBy('a')->get();
         $this->assertSame(
@@ -327,7 +325,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
     public function test_groupBy_indexBy_countBy()
     {
-        $list = _::_([
+        $list = underscore([
             ['a' => 0, 'b' => 1, 'c' => 1],
             ['a' => true, 'b' => false, 'c' => 'c'],
             ['a' => 2, 'b' => 1, 'c' => 2],
@@ -361,12 +359,12 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
     {
         $array = [['deep' => 1, 'ok'], 'shallow', 0, false];
 
-        $this->assertSame($array, _::_($array)->toArray());
+        $this->assertSame($array, underscore($array)->toArray());
     }
 
     public function test_partition()
     {
-        $nums   = _::_(range(1, 10));
+        $nums   = underscore(range(1, 10));
         $oddEvn = $nums->partition(function ($i) {
             return $i % 2;
         })->get();

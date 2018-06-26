@@ -9,10 +9,15 @@ class UnderscoreTest extends \PHPUnit_Framework_TestCase
     public function test_constant()
     {
         foreach ([1, 'A', [], new \stdClass()] as $value) {
-            $fn = _::_()->constant($value);
+            $fn = underscore()->constant($value);
 
             $this->assertSame($value, $fn());
         }
+    }
+
+    public function test_()
+    {
+        $this->assertInstanceOf(_::class, _::_());
     }
 
     public function test_noop()
@@ -21,7 +26,7 @@ class UnderscoreTest extends \PHPUnit_Framework_TestCase
 
         $t = microtime(1);
         $m = memory_get_usage();
-        $x = _::_()->noop();
+        $x = underscore()->noop();
         $t = microtime(1) - $t;
         $m = memory_get_usage() - $m;
 
@@ -35,7 +40,7 @@ class UnderscoreTest extends \PHPUnit_Framework_TestCase
             return $i * 2;
         };
 
-        $o = _::_()->times(5, $fn);
+        $o = underscore()->times(5, $fn);
 
         $this->assertSame([0, 2, 4, 6, 8], $o->toArray());
     }
@@ -49,7 +54,7 @@ class UnderscoreTest extends \PHPUnit_Framework_TestCase
         }
 
         foreach ($cases as $l => $r) {
-            $rand = _::_()->random($l, $r);
+            $rand = underscore()->random($l, $r);
 
             $this->assertGreaterThanOrEqual($l, $rand);
             $this->assertLessThanOrEqual($r, $rand);
@@ -58,9 +63,9 @@ class UnderscoreTest extends \PHPUnit_Framework_TestCase
 
     public function test_unique_id()
     {
-        $u  = _::_()->uniqueId();
-        $u1 = _::_()->uniqueId();
-        $u3 = _::_()->uniqueId('id:');
+        $u  = underscore()->uniqueId();
+        $u1 = underscore()->uniqueId();
+        $u3 = underscore()->uniqueId('id:');
 
         $this->assertSame('1', $u);
         $this->assertSame('2', $u1);

@@ -5,6 +5,28 @@ namespace Ahc\Underscore;
 final class Underscore extends UnderscoreFunction
 {
     /**
+     * Constructor.
+     *
+     * @param array|mixed $data
+     */
+    public function __construct($data = [])
+    {
+        parent::__construct($data);
+    }
+
+    /**
+     * A static shortcut to constructor.
+     *
+     * @param array|mixed $data Array or array like or array convertible.
+     *
+     * @return self
+     */
+    public static function _($data = null)
+    {
+        return new static($data);
+    }
+
+    /**
      * Generates a function that always returns a constant value.
      *
      * @param mixed $value
