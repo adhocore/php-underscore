@@ -1,6 +1,6 @@
 ## adhocore/underscore
 
-PHP underscore inspired &amp;/or cloned from awesome `_.js`. A set of utilities and data manipulation helpers that provides convenience functionalites to deal with array, list, hash, functions and so on in a neat elegant and OOP way.
+PHP underscore inspired &amp;/or cloned from awesome `_.js`. A set of utilities and data manipulation helpers providing convenience functionalites to deal with array, list, hash, functions and so on in a neat elegant and OOP way. Guaranteed to save you tons of boiler plate codes when churning complex data collection.
 
 [![Latest Version](https://img.shields.io/github/release/adhocore/underscore.svg?style=flat-square)](https://github.com/adhocore/underscore/releases)
 [![Travis Build](https://img.shields.io/travis/adhocore/underscore/master.svg?style=flat-square)](https://travis-ci.org/adhocore/underscore?branch=master)
