@@ -2,10 +2,10 @@
 
 PHP underscore inspired &amp;/or cloned from awesome `_.js`. A set of utilities and data manipulation helpers providing convenience functionalites to deal with array, list, hash, functions and so on in a neat elegant and OOP way. Guaranteed to save you tons of boiler plate codes when churning complex data collection.
 
-[![Latest Version](https://img.shields.io/github/release/adhocore/underscore.svg?style=flat-square)](https://github.com/adhocore/underscore/releases)
+[![Latest Version](https://img.shields.io/github/release/adhocore/php-underscore.svg?style=flat-square)](https://github.com/adhocore/php-underscore/releases)
 [![Travis Build](https://img.shields.io/travis/adhocore/php-underscore/master.svg?style=flat-square)](https://travis-ci.org/adhocore/php-underscore?branch=master)
-[![Scrutinizer CI](https://img.shields.io/scrutinizer/g/adhocore/underscore.svg?style=flat-square)](https://scrutinizer-ci.com/g/adhocore/underscore/?branch=master)
-[![Codecov branch](https://img.shields.io/codecov/c/github/adhocore/underscore/master.svg?style=flat-square)](https://codecov.io/gh/adhocore/underscore)
+[![Scrutinizer CI](https://img.shields.io/scrutinizer/g/adhocore/php-underscore.svg?style=flat-square)](https://scrutinizer-ci.com/g/adhocore/php-underscore/?branch=master)
+[![Codecov branch](https://img.shields.io/codecov/c/github/adhocore/php-underscore/master.svg?style=flat-square)](https://codecov.io/gh/adhocore/php-underscore)
 [![StyleCI](https://styleci.io/repos/108437038/shield)](https://styleci.io/repos/108437038)
 [![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 
