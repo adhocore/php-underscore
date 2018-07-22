@@ -2,7 +2,9 @@
 
 namespace Ahc\Underscore\Tests;
 
-class UnderscoreFunctionTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class UnderscoreFunctionTest extends TestCase
 {
     public function test_memoize()
     {
@@ -27,10 +29,14 @@ class UnderscoreFunctionTest extends \PHPUnit_Framework_TestCase
 
         $buffer = ob_get_clean();
 
-        $this->assertSame(1, substr_count($buffer, 'sum 1 + 2'),
+        $this->assertSame(
+            1,
+            substr_count($buffer, 'sum 1 + 2'),
             'Should be called only once, subsequent calls uses memo'
         );
-        $this->assertSame(1, substr_count($buffer, 'sum 3 + 2'),
+        $this->assertSame(
+            1,
+            substr_count($buffer, 'sum 3 + 2'),
             'Should be called only once, subsequent calls uses memo'
         );
     }
@@ -76,7 +82,9 @@ class UnderscoreFunctionTest extends \PHPUnit_Framework_TestCase
 
         $buffer = ob_get_clean();
 
-        $this->assertLessThanOrEqual(3, substr_count($buffer, 'throttle'),
+        $this->assertLessThanOrEqual(
+            3,
+            substr_count($buffer, 'throttle'),
             'Should be called only once, subsequent calls uses memo'
         );
     }

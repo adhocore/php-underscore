@@ -2,7 +2,9 @@
 
 namespace Ahc\Underscore\Tests;
 
-class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
+use PHPUnit\Framework\TestCase;
+
+class UnderscoreCollectionTest extends TestCase
 {
     public function test_array_json_props()
     {
@@ -33,7 +35,7 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \PHPUnit_Framework_Error_Notice
+     * @expectedException \PHPUnit\Framework\Error\Notice
      * @expectedExceptionMessage Undefined offset: 5
      */
     public function test_get()
@@ -310,7 +312,8 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
         $byA = $list->sortBy('a')->get();
         $this->assertSame(
             [2 => ['a' => 0, 'b' => 1], 0 => ['a' => 1, 'b' => 2], 1 => ['a' => 2, 'b' => 3]],
-            $byA, 'sort by a'
+            $byA,
+            'sort by a'
         );
 
         $byAB = $list->sortBy(function ($i) {
@@ -319,7 +322,8 @@ class UnderscoreCollectionTest extends \PHPUnit_Framework_TestCase
 
         $this->assertSame(
             [2 => ['a' => 0, 'b' => 1], 0 => ['a' => 1, 'b' => 2], 1 => ['a' => 2, 'b' => 3]],
-            $byAB, 'sort by a+b'
+            $byAB,
+            'sort by a+b'
         );
     }
 

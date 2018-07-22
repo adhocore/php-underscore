@@ -3,8 +3,9 @@
 namespace Ahc\Underscore\Tests;
 
 use Ahc\Underscore\Underscore as _;
+use PHPUnit\Framework\TestCase;
 
-class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
+class UnderscoreArrayTest extends TestCase
 {
     public function test_first_last()
     {
@@ -120,7 +121,7 @@ class UnderscoreArrayTest extends \PHPUnit_Framework_TestCase
         $array = [[1, 2], 'a' => 3, 'b' => 'B'];
 
         foreach (underscore($array)->object() as $index => $value) {
-            $this->assertTrue(is_object($value));
+            $this->assertInternalType('object', $value);
             $this->assertSame($index, $value->index);
             $this->assertSame($array[$index], $value->value);
         }
