@@ -3,8 +3,9 @@
 namespace Ahc\Underscore\Tests;
 
 use Ahc\Underscore\Underscore as _;
+use PHPUnit\Framework\TestCase;
 
-class UnderscoreTest extends \PHPUnit_Framework_TestCase
+class UnderscoreTest extends TestCase
 {
     public function test_constant()
     {

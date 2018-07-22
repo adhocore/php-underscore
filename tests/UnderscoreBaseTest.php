@@ -3,6 +3,7 @@
 namespace Ahc\Underscore\Tests;
 
 use Ahc\Underscore\Underscore as _;
+use PHPUnit\Framework\TestCase;
 
 class Stub
 {
@@ -20,7 +21,7 @@ class Json implements \JsonSerializable
     }
 }
 
-class UnderscoreBaseTest extends \PHPUnit_Framework_TestCase
+class UnderscoreBaseTest extends TestCase
 {
     public function test_asArray()
     {
@@ -47,7 +48,7 @@ class UnderscoreBaseTest extends \PHPUnit_Framework_TestCase
 
     public function test_now()
     {
-        $this->assertTrue(is_float(_::_()->now()));
+        $this->assertInternalType('float', _::_()->now());
     }
 
     public function test_keys_values()
@@ -113,7 +114,7 @@ class UnderscoreBaseTest extends \PHPUnit_Framework_TestCase
 
         $und = underscore([10, 20, 30]);
 
-        $this->assertTrue(is_callable([$und, 'double']));
+        $this->assertInternalType('callable', [$und, 'double']);
         $this->assertSame([20, 40, 60], $und->double()->toArray());
 
         $und->notMixedIn();
