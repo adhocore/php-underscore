@@ -161,7 +161,7 @@ class UnderscoreBaseTest extends TestCase
             $u[] = new Hom($i);
         }
 
-        $u = underscore($u);
+        $u  = underscore($u);
         $sq = $u->filter->even()->map->square->get();
 
         // keys are kept intact :)

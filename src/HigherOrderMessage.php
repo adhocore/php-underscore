@@ -12,7 +12,7 @@
 namespace Ahc\Underscore;
 
 /**
- * Source: Laravel HigherOrderProxy
+ * Source: Laravel HigherOrderProxy.
  *
  * @link https://github.com/laravel/framework/pull/16267
  */
