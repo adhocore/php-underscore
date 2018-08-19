@@ -23,6 +23,18 @@ Although all of them are available with helper function `underscore($data)` or `
 the methods are grouped and organized in different heriarchy and classes according as their scope.
 This keeps it maintainable and saves from having a God class.
 
+#### Contents
+
+- [Underscore](#underscore)
+- [UnderscoreFunction](#underscorefunction)
+- [UnderscoreArray](#underscorearray)
+- [UnderscoreCollection](#underscorecollection)
+- [UnderscoreBase](#underscorebase)
+- [HigherOrderMessage](#higherordermessage)
+- [ArrayAccess](#arrayaccess)
+- [Arrayizes](#arrayizes)
+
+
 ---
 ### Underscore
 
@@ -865,6 +877,56 @@ Alias of <a href="#unique">unique()</a>.
 
 Alias of <a href="#difference">difference()</a>.
 
+---
+### HigherOrderMessage
+
+A syntatic sugar to use elegant shorthand oneliner for complex logic often wrapped in closures.
+See example below:
+
+```php
+// Higher Order Messaging
+class HOM
+{
+    protected $n;
+    public $square;
+
+    public function __construct($n)
+    {
+        $this->n      = $n;
+        $this->square = $n * $n;
+    }
+
+    public function even()
+    {
+        return $this->n % 2 === 0;
+    }
+}
+
+$u = [new HOM(1), new HOM(2), new HOM(3), new HOM(4)];
+
+// Filter `even()` items
+$evens = $u->filter->even(); // 'even()' method of each items!
+
+// Map each evens to their squares
+$squares = $evens->map->square; // 'square' prop of each items!
+// Gives an Underscore instance
+
+// Get the data
+$squares->get();
+// [1 => 4, 3 => 16]
+```
+
+Without higher order messaging that would look like:
+
+```php
+$evens = $u->filter(function ($it) {
+    return $it->even();
+});
+
+$squares = $evens->map(function ($it) {
+    return $it->square;
+});
+```
 
 ---
 ### \ArrayAccess
