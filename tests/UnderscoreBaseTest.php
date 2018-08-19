@@ -30,6 +30,23 @@ class Json implements \JsonSerializable
     }
 }
 
+class Hom
+{
+    public $n;
+    public $square;
+
+    public function __construct($n)
+    {
+        $this->n      = $n;
+        $this->square = $n * $n;
+    }
+
+    public function even()
+    {
+        return $this->n % 2 === 0;
+    }
+}
+
 class UnderscoreBaseTest extends TestCase
 {
     public function test_asArray()
@@ -134,5 +151,29 @@ class UnderscoreBaseTest extends TestCase
         $this->assertSame('[]', underscore()->valueOf());
         $this->assertSame('[1,2]', underscore([1, 2])->valueOf());
         $this->assertSame('["a","b"]', underscore(['a', 'b'])->valueOf());
+    }
+
+    public function test_hom()
+    {
+        $i = 10;
+
+        while ($i--) {
+            $u[] = new Hom($i);
+        }
+
+        $u = underscore($u);
+        $sq = $u->filter->even()->map->square->get();
+
+        // keys are kept intact :)
+        $this->assertSame([1 => 64, 3 => 36, 5 => 16, 7 => 4, 9 => 0], $sq);
+    }
+
+    /**
+     * @expectedException \Ahc\Underscore\UnderscoreException
+     * @expectedExceptionMessage The 'anon' is not defined
+     */
+    public function test_hom_throws()
+    {
+        underscore()->anon->value();
     }
 }
