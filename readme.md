@@ -946,3 +946,27 @@ isset($u['b']); // true
 
 unset($u[1]);
 ```
+
+---
+### Arrayizes
+
+You can use this trait to arrayize all complex data.
+
+```php
+use Ahc\Underscore\Arrayizes;
+
+class Any
+{
+    use Arrayizes;
+
+    public function name()
+    {
+        $this->asArray($data);
+    }
+}
+```
+
+---
+#### License
+
+> [MIT](./LICENSE) | &copy; 2017-2018 | Jitendra Adhikari
