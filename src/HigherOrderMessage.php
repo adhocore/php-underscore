@@ -29,14 +29,14 @@ class HigherOrderMessage
 
     public function __call($method, $args)
     {
-        $this->underscore->{$this->method}(function ($item) use ($method, $args) {
+        return $this->underscore->{$this->method}(function ($item) use ($method, $args) {
             return \call_user_func_array([$item, $method], $args);
         });
     }
 
     public function __get($prop)
     {
-        $this->underscore->{$this->method}(function ($item) use ($prop) {
+        return $this->underscore->{$this->method}(function ($item) use ($prop) {
             $props = \array_column([$item], $prop);
 
             return $props ? $props[0] : null;
