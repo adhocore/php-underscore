@@ -39,7 +39,7 @@ class HigherOrderMessage
         return $this->underscore->{$this->method}(function ($item) use ($prop) {
             $props = \array_column([$item], $prop);
 
-            return $props ? $props[0] : null;
+            return empty($props) ? null : $props[0];
         });
     }
 }
