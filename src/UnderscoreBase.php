@@ -351,6 +351,23 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     }
 
     /**
+     * Facilitates the use of Higher Order Messaging.
+     *
+     * @param string $method
+     *
+     * @return self
+     */
+    public function __get($method)
+    {
+        // For now no mixins in HOM :)
+        if (!\method_exists($this, $method)) {
+            throw new UnderscoreException("The '$method' is not defined");
+        }
+
+        return new HigherOrderMessage($this, $method);
+    }
+
+    /**
      * Get string value (JSON representation) of this instance.
      *
      * @return string
