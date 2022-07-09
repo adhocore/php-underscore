@@ -91,8 +91,8 @@ class UnderscoreFunction extends UnderscoreArray
      *
      * Note that last function is executed first.
      *
-     * @param callable         $fn1
-     * @param callable         $fn2
+     * @param callable $fn1
+     * @param callable $fn2
      * @param ...callable|null $fn3 And so on!
      *
      * @return mixed Final result value.

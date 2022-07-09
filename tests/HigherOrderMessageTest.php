@@ -12,7 +12,7 @@
 namespace Ahc\Underscore\Test;
 
 use Ahc\Underscore\HigherOrderMessage;
-use PHPUnit\Framework\TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 class HOM
 {
