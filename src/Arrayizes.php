@@ -54,7 +54,8 @@ trait Arrayizes
     public function toArray(): array
     {
         return \array_map(
-            fn ($value) => \is_scalar($value) ? $value : $this->asArray($value, false), $this->getData()
+            fn ($value) => \is_scalar($value) ? $value : $this->asArray($value, false),
+            $this->getData()
         );
     }
 }
