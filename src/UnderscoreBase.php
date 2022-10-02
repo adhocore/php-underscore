@@ -19,10 +19,10 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
     const VERSION = '0.0.2';
 
     /** @var array The array manipulated by this Underscore instance */
-    protected $data;
+    protected array $data;
 
     /** @var array Custom userland functionality through named callbacks */
-    protected static $mixins = [];
+    protected static array $mixins = [];
 
     /**
      * Constructor. Only allow `Ahc\Underscore\Underscore` to be instantiated in userland.
@@ -41,33 +41,27 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      *
      * @return mixed
      */
-    public function get($index = null)
+    public function get(mixed $index = null): mixed
     {
         if (null === $index) {
             return $this->data;
         }
 
-        return $this->data[$index];
+        return $this->data[$index] ?? null;
     }
 
     /**
      * Get data.
-     *
-     * @return array
      */
-    public function getData()
+    public function getData(): array
     {
         return $this->data;
     }
 
     /**
      * Flatten a multi dimension array to 1 dimension.
-     *
-     * @param array $array
-     *
-     * @return array
      */
-    public function flat($array, &$flat = [])
+    public function flat(array $array, &$flat = []): array
     {
         foreach ($array as $value) {
             if ($value instanceof static) {
@@ -86,16 +80,10 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
 
     /**
      * Negate a given truth test callable.
-     *
-     * @param callable $fn
-     *
-     * @return callable
      */
-    protected function negate(callable $fn)
+    protected function negate(callable $fn): callable
     {
-        return function () use ($fn) {
-            return !\call_user_func_array($fn, \func_get_args());
-        };
+        return static fn () => !$fn(...\func_get_args());
     }
 
     /**
@@ -105,21 +93,13 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      *
      * @return callable
      */
-    protected function valueFn($fn)
+    protected function valueFn($fn = null): callable
     {
         if (\is_callable($fn)) {
             return $fn;
         }
 
-        return function ($value) use ($fn) {
-            if (null === $fn) {
-                return $value;
-            }
-
-            $value = \array_column([$value], $fn);
-
-            return  $value ? $value[0] : null;
-        };
+        return static fn ($value) => null === $fn ? $value : \array_column([$value], $fn)[0] ?? null;
     }
 
     /**
@@ -129,7 +109,7 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      *
      * @return bool
      */
-    public function offsetExists($index)
+    public function offsetExists(mixed $index): bool
     {
         return \array_key_exists($index, $this->data);
     }
@@ -139,7 +119,7 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      *
      * @return mixed
      */
-    public function offsetGet($index)
+    public function offsetGet(mixed $index): mixed
     {
         return $this->data[$index];
     }
@@ -152,7 +132,7 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      *
      * @return void
      */
-    public function offsetSet($index, $value)
+    public function offsetSet(mixed $index, mixed $value): void
     {
         $this->data[$index] = $value;
     }
@@ -161,48 +141,42 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      * Unsets/removes the value at given index.
      *
      * @param string|int $index
+     *
+     * @return void
      */
-    public function offsetUnset($index)
+    public function offsetUnset(mixed $index): void
     {
         unset($this->data[$index]);
     }
 
     /**
      * Gets the count of items.
-     *
-     * @return int
      */
-    public function count()
+    public function count(): int
     {
         return \count($this->data);
     }
 
     /**
      * Gets the iterator for looping.
-     *
-     * @return \ArrayIterator
      */
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->data);
     }
 
     /**
      * Gets the data for json serialization.
-     *
-     * @return array
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->toArray();
     }
 
     /**
      * Stringify the underscore instance.
-     *
-     * @return string Json encoded data.
      */
-    public function __toString()
+    public function __toString(): string
     {
         return \json_encode($this->toArray());
     }
@@ -212,37 +186,31 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      *
      * @return float
      */
-    public function now()
+    public function now(): float
     {
         return \microtime(1) * 1000;
     }
 
     /**
      * Get all the keys.
-     *
-     * @return self
      */
-    public function keys()
+    public function keys(): self
     {
         return new static(\array_keys($this->data));
     }
 
     /**
      * Get all the keys.
-     *
-     * @return self
      */
-    public function values()
+    public function values(): self
     {
         return new static(\array_values($this->data));
     }
 
     /**
      * Pair all items to use an array of index and value.
-     *
-     * @return self
      */
-    public function pairs()
+    public function pairs(): self
     {
         $pairs = [];
 
@@ -255,10 +223,8 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
 
     /**
      * Swap index and value of all the items. The values should be stringifiable.
-     *
-     * @return self
      */
-    public function invert()
+    public function invert(): self
     {
         return new static(\array_flip($this->data));
     }
@@ -270,7 +236,7 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      *
      * @return self
      */
-    public function pick($index)
+    public function pick($index): self
     {
         $indices = \array_flip(\is_array($index) ? $index : \func_get_args());
 
@@ -284,7 +250,7 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
      *
      * @return self
      */
-    public function omit($index)
+    public function omit($index): self
     {
         $indices = \array_diff(
             \array_keys($this->data),
@@ -296,22 +262,16 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
 
     /**
      * Creates a shallow copy.
-     *
-     * @return self
      */
-    public function clon()
+    public function clon(): self
     {
         return clone $this;
     }
 
     /**
      * Invokes callback fn with clone and returns original self.
-     *
-     * @param callable $fn
-     *
-     * @return self
      */
-    public function tap(callable $fn)
+    public function tap(callable $fn): self
     {
         $fn($this->clon());
 
@@ -320,26 +280,16 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
 
     /**
      * Adds a custom handler/method to instance. The handler is bound to this instance.
-     *
-     * @param string   $name
-     * @param \Closure $fn
-     *
-     * @return self
      */
-    public static function mixin($name, \Closure $fn)
+    public static function mixin(string $name, \Closure $fn): void
     {
         static::$mixins[$name] = $fn;
     }
 
     /**
      * Calls the registered mixin by its name.
-     *
-     * @param string $name
-     * @param array  $args
-     *
-     * @return self
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args): self
     {
         if (isset(static::$mixins[$method])) {
             $method = \Closure::bind(static::$mixins[$method], $this);
@@ -352,12 +302,8 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
 
     /**
      * Facilitates the use of Higher Order Messaging.
-     *
-     * @param string $method
-     *
-     * @return self
      */
-    public function __get($method)
+    public function __get(string $method): HigherOrderMessage
     {
         // For now no mixins in HOM :)
         if (!\method_exists($this, $method)) {
@@ -369,10 +315,8 @@ class UnderscoreBase implements \ArrayAccess, \Countable, \IteratorAggregate, \J
 
     /**
      * Get string value (JSON representation) of this instance.
-     *
-     * @return string
      */
-    public function valueOf()
+    public function valueOf(): string
     {
         return (string) $this;
     }

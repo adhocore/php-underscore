@@ -21,7 +21,7 @@ class UnderscoreFunction extends UnderscoreArray
      *
      * @return mixed
      */
-    public function memoize(callable $fn)
+    public function memoize(callable $fn): mixed
     {
         static $memo = [];
 
@@ -32,7 +32,7 @@ class UnderscoreFunction extends UnderscoreArray
                 return $memo[$hash];
             }
 
-            return $memo[$hash] = \call_user_func_array($fn, $args);
+            return $memo[$hash] = $fn(...$args);
         };
     }
 
@@ -46,10 +46,10 @@ class UnderscoreFunction extends UnderscoreArray
      */
     public function delay(callable $fn, $wait)
     {
-        return function () use ($fn, $wait) {
+        return static function () use ($fn, $wait) {
             \usleep(1000 * $wait);
 
-            return \call_user_func_array($fn, \func_get_args());
+            return $fn(...\func_get_args());
         };
     }
 
@@ -78,7 +78,7 @@ class UnderscoreFunction extends UnderscoreArray
 
             if ($remaining <= 0 || $remaining > $wait) {
                 $previous = $now;
-                $result   = \call_user_func_array($fn, \func_get_args());
+                $result   = $fn(...\func_get_args());
             }
 
             return $result;
@@ -102,9 +102,9 @@ class UnderscoreFunction extends UnderscoreArray
         $fns   = \func_get_args();
         $start = \func_num_args() - 1;
 
-        return function () use ($fns, $start) {
+        return static function () use ($fns, $start) {
             $i      = $start;
-            $result = \call_user_func_array($fns[$start], \func_get_args());
+            $result = $fns[$start](...\func_get_args());
 
             while ($i--) {
                 $result = $fns[$i]($result);

@@ -15,12 +15,8 @@ class UnderscoreCollection extends UnderscoreBase
 {
     /**
      * Apply given callback to each of the items in collection.
-     *
-     * @param callable $fn The callback.
-     *
-     * @return self
      */
-    public function each(callable $fn)
+    public function each(callable $fn): self
     {
         foreach ($this->data as $index => $value) {
             $fn($value, $index);
@@ -31,12 +27,8 @@ class UnderscoreCollection extends UnderscoreBase
 
     /**
      * Update the value of each items with the result of given callback.
-     *
-     * @param callable $fn The callback.
-     *
-     * @return self
      */
-    public function map(callable $fn)
+    public function map(callable $fn): self
     {
         $data = [];
 
@@ -68,7 +60,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return mixed
      */
-    public function reduceRight(callable $fn, $memo)
+    public function reduceRight(callable $fn, mixed $memo): mixed
     {
         return \array_reduce(\array_reverse($this->data, true), $fn, $memo);
     }
@@ -81,13 +73,15 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return mixed|null
      */
-    public function find(callable $fn, $useValue = true)
+    public function find(callable $fn, bool $useValue = true): mixed
     {
         foreach ($this->data as $index => $value) {
             if ($fn($value, $index)) {
                 return $useValue ? $value : $index;
             }
         }
+
+        return null;
     }
 
     /**
@@ -97,7 +91,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return self
      */
-    public function filter($fn = null)
+    public function filter(callable $fn = null): self
     {
         if (null === $fn) {
             return new static(\array_filter($this->data));
@@ -115,7 +109,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return self
      */
-    public function reject(callable $fn)
+    public function reject(callable $fn): self
     {
         $data = \array_filter($this->data, $this->negate($fn), \ARRAY_FILTER_USE_BOTH);
 
@@ -129,7 +123,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return bool
      */
-    public function every(callable $fn)
+    public function every(callable $fn): bool
     {
         return $this->match($fn, true);
     }
@@ -141,7 +135,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return bool
      */
-    public function some(callable $fn)
+    public function some(callable $fn): bool
     {
         return $this->match($fn, false);
     }
@@ -156,7 +150,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return bool
      */
-    protected function match(callable $fn, $all = true)
+    protected function match(callable $fn, bool $all = true): bool
     {
         foreach ($this->data as $index => $value) {
             if ($all ^ $fn($value, $index)) {
@@ -169,12 +163,8 @@ class UnderscoreCollection extends UnderscoreBase
 
     /**
      * Check if the collection contains given item.
-     *
-     * @param mixed $item
-     *
-     * @return bool
      */
-    public function contains($item)
+    public function contains(mixed $item): bool
     {
         return \in_array($item, $this->data);
     }
@@ -186,9 +176,9 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return mixed Whatever the callback yields.
      */
-    public function invoke(callable $fn)
+    public function invoke(callable $fn): mixed
     {
-        return \call_user_func_array($fn, $this->data);
+        return $fn(...$this->data);
     }
 
     /**
@@ -199,7 +189,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return self
      */
-    public function pluck($columnKey, $indexKey = null)
+    public function pluck(mixed $columnKey, mixed $indexKey = null): self
     {
         $data = \array_column($this->data, $columnKey, $indexKey);
 
@@ -208,24 +198,16 @@ class UnderscoreCollection extends UnderscoreBase
 
     /**
      * Filter only the items that contain all the given props (matching both index and value).
-     *
-     * @param array $props
-     *
-     * @return self
      */
-    public function where(array $props)
+    public function where(array $props): self
     {
         return $this->filter($this->matcher($props));
     }
 
     /**
      * Get the first item that contains all the given props (matching both index and value).
-     *
-     * @param array $props
-     *
-     * @return mixed
      */
-    public function findWhere(array $props)
+    public function findWhere(array $props): mixed
     {
         return $this->find($this->matcher($props));
     }
@@ -239,7 +221,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return callable
      */
-    protected function matcher(array $props)
+    protected function matcher(array $props): callable
     {
         return function ($value, $index) use ($props) {
             foreach ($props as $prop => $criteria) {
@@ -259,7 +241,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return mixed
      */
-    public function max($fn = null)
+    public function max($fn = null): mixed
     {
         return $this->maxMin($fn, true);
     }
@@ -271,7 +253,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return mixed
      */
-    public function min($fn = null)
+    public function min($fn = null): mixed
     {
         return $this->maxMin($fn, false);
     }
@@ -286,7 +268,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return mixed
      */
-    protected function maxMin($fn = null, $isMax = true)
+    protected function maxMin($fn = null, bool $isMax = true): mixed
     {
         $fn = $this->valueFn($fn);
 
@@ -308,7 +290,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return self
      */
-    public function shuffle()
+    public function shuffle(): self
     {
         $data = [];
         $keys = \array_keys($this->data);
@@ -329,7 +311,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return self
      */
-    public function sample($n = 1)
+    public function sample(int $n = 1): self
     {
         $shuffled = $this->shuffle()->get();
 
@@ -343,7 +325,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return self
      */
-    public function sortBy($fn)
+    public function sortBy($fn): self
     {
         $data = $this->map($this->valueFn($fn))->get();
 
@@ -363,7 +345,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return self
      */
-    public function groupBy($fn)
+    public function groupBy($fn): self
     {
         return $this->group($fn, true);
     }
@@ -375,7 +357,7 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return self
      */
-    public function indexBy($fn)
+    public function indexBy($fn): self
     {
         return $this->group($fn, false);
     }
@@ -387,24 +369,17 @@ class UnderscoreCollection extends UnderscoreBase
      *
      * @return self
      */
-    public function countBy($fn)
+    public function countBy($fn): self
     {
-        return $this->group($fn, true)->map(function ($value) {
-            return \count($value);
-        });
+        return $this->group($fn, true)->map(fn ($value) => \count($value));
     }
 
     /**
      * Group/index items by using the result of given callback.
      *
      * @internal
-     *
-     * @param callable|string $fn
-     * @param bool            $isGroup
-     *
-     * @return self
      */
-    protected function group($fn, $isGroup = true)
+    protected function group($fn, bool $isGroup = true): self
     {
         $data = [];
         $fn   = $this->valueFn($fn);
@@ -418,17 +393,13 @@ class UnderscoreCollection extends UnderscoreBase
 
     /**
      * Separate the items into two groups: one passing given truth test and other failing.
-     *
-     * @param callable|string $fn
-     *
-     * @return self
      */
-    public function partition($fn)
+    public function partition(callable $fn): self
     {
         $data = [[/* pass */], [/* fail */]];
         $fn   = $this->valueFn($fn);
 
-        $this->each(function ($value, $index) use ($fn, &$data) {
+        $this->each(static function ($value, $index) use ($fn, &$data) {
             $data[$fn($value, $index) ? 0 : 1][] = $value;
         });
 
