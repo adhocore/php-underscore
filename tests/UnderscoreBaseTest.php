@@ -24,6 +24,7 @@ class Stub
 
 class Json implements \JsonSerializable
 {
+    #[\ReturnTypeWillChange]
     public function jsonSerialize()
     {
         return ['a' => 1, 'b' => 2, 'c' => 3];
@@ -74,7 +75,7 @@ class UnderscoreBaseTest extends TestCase
 
     public function test_now()
     {
-        $this->assertInternalType('float', _::_()->now());
+        $this->assertNotEmpty(_::_()->now());
     }
 
     public function test_keys_values()
@@ -126,10 +127,6 @@ class UnderscoreBaseTest extends TestCase
         $this->assertSame($main, $tap, 'hard equal');
     }
 
-    /**
-     * @expectedException \Ahc\Underscore\UnderscoreException
-     * @expectedExceptionMessage The mixin with name 'notMixedIn' is not defined
-     */
     public function test_mixin()
     {
         _::mixin('double', function () {
@@ -140,8 +137,11 @@ class UnderscoreBaseTest extends TestCase
 
         $und = underscore([10, 20, 30]);
 
-        $this->assertInternalType('callable', [$und, 'double']);
+        $this->assertIsCallable([$und, 'double']);
         $this->assertSame([20, 40, 60], $und->double()->toArray());
+
+        $this->expectException(\Ahc\Underscore\UnderscoreException::class);
+        $this->expectExceptionMessage("The mixin with name 'notMixedIn' is not defined");
 
         $und->notMixedIn();
     }
@@ -168,12 +168,11 @@ class UnderscoreBaseTest extends TestCase
         $this->assertSame([1 => 64, 3 => 36, 5 => 16, 7 => 4, 9 => 0], $sq);
     }
 
-    /**
-     * @expectedException \Ahc\Underscore\UnderscoreException
-     * @expectedExceptionMessage The 'anon' is not defined
-     */
     public function test_hom_throws()
     {
+        $this->expectException(\Ahc\Underscore\UnderscoreException::class);
+        $this->expectExceptionMessage("The 'anon' is not defined");
+
         underscore()->anon->value();
     }
 }

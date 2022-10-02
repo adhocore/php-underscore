@@ -68,9 +68,7 @@ class UnderscoreArrayTest extends TestCase
 
         $this->assertSame(
             ['a', '', 3 => 1, 5 => 0, 7 => 'b', 8 => 3, 9 => 2],
-            underscore($array)->uniq(function ($i) {
-                return $i;
-            })->get(),
+            underscore($array)->uniq(fn ($i) => $i)->get(),
             'uniq'
         );
     }
@@ -130,7 +128,7 @@ class UnderscoreArrayTest extends TestCase
         $array = [[1, 2], 'a' => 3, 'b' => 'B'];
 
         foreach (underscore($array)->object() as $index => $value) {
-            $this->assertInternalType('object', $value);
+            $this->assertTrue(is_object($value));
             $this->assertSame($index, $value->index);
             $this->assertSame($array[$index], $value->value);
         }
