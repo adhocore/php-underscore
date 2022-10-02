@@ -20,7 +20,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return array|mixed With n = 1 (default), it gives one item, which may not be array.
      */
-    public function first($n = 1)
+    public function first(int $n = 1): mixed
     {
         return $this->slice($n, true);
     }
@@ -32,7 +32,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return array|mixed With n = 1 (default), it gives one item, which may not be array.
      */
-    public function last($n = 1)
+    public function last(int $n = 1): mixed
     {
         return $this->slice($n, false);
     }
@@ -47,7 +47,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return array|mixed With n = 1 (default), it gives one item, which may not be array.
      */
-    protected function slice($n, $isFirst = true)
+    protected function slice(int $n, bool $isFirst = true): mixed
     {
         if ($n < 2) {
             return $isFirst ? \reset($this->data) : \end($this->data);
@@ -62,20 +62,16 @@ class UnderscoreArray extends UnderscoreCollection
 
     /**
      * Get only the truthy items.
-     *
-     * @return self
      */
-    public function compact()
+    public function compact(): self
     {
         return $this->filter(null);
     }
 
     /**
      * Gets the flattened version of multidimensional items.
-     *
-     * @return self
      */
-    public function flatten()
+    public function flatten(): self
     {
         return new static($this->flat($this->data));
     }
@@ -87,7 +83,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return self
      */
-    public function unique($fn = null)
+    public function unique(callable $fn = null): self
     {
         if (null === $fn) {
             return new static(\array_unique($this->data));
@@ -96,7 +92,7 @@ class UnderscoreArray extends UnderscoreCollection
         $ids = [];
         $fn  = $this->valueFn($fn);
 
-        return $this->filter(function ($value, $index) use ($fn, &$ids) {
+        return $this->filter(static function ($value, $index) use ($fn, &$ids) {
             return !isset($ids[$id = $fn($value, $index)]) ? $ids[$id] = true : false;
         });
     }
@@ -108,13 +104,11 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return self
      */
-    public function difference($data)
+    public function difference(mixed $data): self
     {
         $data = $this->asArray($data);
 
-        return $this->filter(function ($value) use ($data) {
-            return !\in_array($value, $data);
-        });
+        return $this->filter(static fn ($value) => !\in_array($value, $data));
     }
 
     /**
@@ -124,7 +118,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return self
      */
-    public function union($data)
+    public function union(mixed $data): self
     {
         return new static(\array_merge($this->data, $this->asArray($data)));
     }
@@ -136,13 +130,11 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return self
      */
-    public function intersection($data)
+    public function intersection(mixed $data): self
     {
         $data = $this->asArray($data);
 
-        return $this->filter(function ($value) use ($data) {
-            return \in_array($value, $data);
-        });
+        return $this->filter(static fn ($value) => \in_array($value, $data));
     }
 
     /**
@@ -152,27 +144,25 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return self
      */
-    public function zip($data)
+    public function zip(mixed $data): self
     {
         $data = $this->asArray($data);
 
-        return $this->map(function ($value, $index) use ($data) {
-            return [$value, isset($data[$index]) ? $data[$index] : null];
-        });
+        return $this->map(static fn ($value, $idx) => [$value, isset($data[$idx]) ? $data[$idx] : null]);
     }
 
     /**
      * Hydrate the items into given class or stdClass.
      *
-     * @param string|null $className FQCN of the class whose constructor accepts two parameters: value and index.
+     * @param string|null $class FQCN of the class whose constructor accepts two parameters: value and index.
      *
      * @return self
      */
-    public function object($className = null)
+    public function object(string $class = null): self
     {
-        return $this->map(function ($value, $index) use ($className) {
-            return $className ? new $className($value, $index) : (object) \compact('value', 'index');
-        });
+        return $this->map(
+            static fn ($value, $index) => $class ? new $class($value, $index) : (object) \compact('value', 'index')
+        );
     }
 
     /**
@@ -182,7 +172,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return mixed|null
      */
-    public function findIndex($fn = null)
+    public function findIndex(callable $fn = null): mixed
     {
         return $this->find($this->valueFn($fn), false);
     }
@@ -194,7 +184,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return mixed|null
      */
-    public function findLastIndex($fn = null)
+    public function findLastIndex(callable $fn = null): mixed
     {
         return (new static(\array_reverse($this->data, true)))->find($this->valueFn($fn), false);
     }
@@ -206,7 +196,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return string|int|null
      */
-    public function indexOf($value)
+    public function indexOf(mixed $value): mixed
     {
         return (false === $index = \array_search($value, $this->data)) ? null : $index;
     }
@@ -218,7 +208,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return string|int|null
      */
-    public function lastIndexOf($value)
+    public function lastIndexOf(mixed $value): mixed
     {
         return (false === $index = \array_search($value, \array_reverse($this->data, true))) ? null : $index;
     }
@@ -233,7 +223,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return string|int|null
      */
-    public function sortedIndex($object, $fn)
+    public function sortedIndex(mixed $object, callable $fn = null): mixed
     {
         $low   = 0;
         $high  = $this->count();
@@ -263,7 +253,7 @@ class UnderscoreArray extends UnderscoreCollection
      *
      * @return self
      */
-    public function range($start, $stop, $step = 1)
+    public function range(int $start, int $stop, int $step = 1): self
     {
         return new static(\range($start, $stop, $step));
     }

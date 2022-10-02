@@ -21,7 +21,7 @@ if (!\function_exists('underscore')) {
      *
      * @return Underscore
      */
-    function underscore($data = [])
+    function underscore(mixed $data = []): Underscore
     {
         return new Underscore($data);
     }

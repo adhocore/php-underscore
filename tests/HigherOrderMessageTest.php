@@ -39,7 +39,7 @@ class HigherOrderMessageTest extends TestCase
      */
     protected $hom2;
 
-    public function setUp()
+    public function setUp(): void
     {
         parent::setUp();
 

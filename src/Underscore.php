@@ -18,7 +18,7 @@ final class Underscore extends UnderscoreFunction
      *
      * @param array|mixed $data
      */
-    public function __construct($data = [])
+    public function __construct(mixed $data = [])
     {
         parent::__construct($data);
     }
@@ -30,44 +30,31 @@ final class Underscore extends UnderscoreFunction
      *
      * @return self
      */
-    public static function _($data = null)
+    public static function _($data = null): self
     {
         return new static($data);
     }
 
     /**
      * Generates a function that always returns a constant value.
-     *
-     * @param mixed $value
-     *
-     * @return callable
      */
-    public function constant($value)
+    public function constant(mixed $value): callable
     {
-        return function () use ($value) {
-            return $value;
-        };
+        return fn () => $value;
     }
 
     /**
      * No operation!
-     *
-     * @return void
      */
-    public function noop()
+    public function noop(): void
     {
         // ;)
     }
 
     /**
      * Run callable n times and create new collection.
-     *
-     * @param int      $n
-     * @param callable $fn
-     *
-     * @return self
      */
-    public function times($n, callable $fn)
+    public function times(int $n, callable $fn): self
     {
         $data = [];
 
@@ -80,25 +67,16 @@ final class Underscore extends UnderscoreFunction
 
     /**
      * Return a random integer between min and max (inclusive).
-     *
-     * @param int $min
-     * @param int $max
-     *
-     * @return int
      */
-    public function random($min, $max)
+    public function random(int $min, int $max): int
     {
         return \mt_rand($min, $max);
     }
 
     /**
      * Generate unique ID (unique for current go/session).
-     *
-     * @param string $prefix
-     *
-     * @return string
      */
-    public function uniqueId($prefix = '')
+    public function uniqueId(string $prefix = ''): string
     {
         static $id = 0;
 

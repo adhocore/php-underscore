@@ -21,7 +21,7 @@ trait Arrayizes
      *
      * @return array
      */
-    public function asArray($data, $cast = true)
+    public function asArray(mixed $data, bool $cast = true): array
     {
         if (\is_array($data)) {
             return $data;
@@ -41,7 +41,7 @@ trait Arrayizes
             return $data->jsonSerialize();
         }
 
-        if (\method_exists($data, 'toArray')) {
+        if (\is_object($data) && \method_exists($data, 'toArray')) {
             return $data->toArray();
         }
 
@@ -50,17 +50,12 @@ trait Arrayizes
 
     /**
      * Convert the data items to array.
-     *
-     * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
-        return \array_map(function ($value) {
-            if (\is_scalar($value)) {
-                return $value;
-            }
-
-            return $this->asArray($value, false);
-        }, $this->getData());
+        return \array_map(
+            fn ($value) => \is_scalar($value) ? $value : $this->asArray($value, false),
+            $this->getData()
+        );
     }
 }
