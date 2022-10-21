@@ -13,6 +13,7 @@ PHP underscore inspired &amp;/or cloned from awesome `_.js`. A set of utilities 
 [![Donate 50](https://img.shields.io/badge/donate-paypal-blue.svg?style=flat-square&label=donate+50)](https://www.paypal.me/ji10/50usd)
 [![Tweet](https://img.shields.io/twitter/url/http/shields.io.svg?style=social)](https://twitter.com/intent/tweet?text=Functional+programming+paradigm+in+PHP+to+manipulate+arrays+like+pro&url=https://github.com/adhocore/php-underscore&hashtags=php,functional,array,collection)
 
+- Zero dependency (no vendor bloat).
 
 ## Installation
 
