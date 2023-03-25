@@ -45,6 +45,7 @@ class UnderscoreCollectionTest extends TestCase
 
     /**
      * @expectedException \PHPUnit\Framework\Error\Notice
+     *
      * @expectedExceptionMessage Undefined offset: 5
      */
     public function test_get()
